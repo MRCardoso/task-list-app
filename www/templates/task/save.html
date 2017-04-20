@@ -1,0 +1,60 @@
+<ion-view ng-init="findOne()">
+    <ion-nav-bar class="bar-stable">
+        <ion-nav-back-button></ion-nav-back-button>
+        <ion-nav-title>
+            {{ formData.isNewRecord ? 'Create' : 'Update' }} Task
+        </ion-nav-title>
+    </ion-nav-bar>
+    <ion-content>
+        <form ng-submit="save()" class="list">
+            <label class="item item-input" ng-class="{ 'has-error' : formData.title=='' || formData.title==null, 'valid-lr': formData.title.length>0}">
+                <span class="input-label">Title</span>
+                <input type="text" placeholder="Title" ng-model="formData.title" required>                
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Description</span>
+                <textarea type="text" placeholder="Description" ng-model="formData.description"></textarea>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Priority
+                </div>
+                <select ng-model="formData.priority">
+                    <option ng-repeat="priority in priorities" value="{{priority.id}}">
+                        {{priority.name}}
+                    </option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Situation
+                </div>
+                <select ng-model="formData.situation">
+                    <option ng-repeat="situation in situations" value="{{situation.id}}">
+                        {{situation.name}}
+                    </option>
+                </select>
+            </label>
+            <label class="item item-input" ng-class="{ 'has-error' : formData.start_date=='' || formData.start_date==null, 'valid-lr': formData.start_date.length>0}">
+                <span class="input-label">Start</span>
+                <input type="date" ng-model="formData.start_date" required>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">End</span>
+                <input type="date" ng-model="formData.end_date">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Status</span>
+                <label class="toggle">
+                    <input type="checkbox" ng-model="formData.status">
+                    <div class="track">
+                    <div class="handle"></div>
+                    </div>
+                </label>
+            </label>
+            <button type="submit" class="button button-block button-positive" ng-disabled="validate()">
+                Save
+            </button>
+        </form>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,92 @@
+/* Empty. Add your own CSS if you like */
+.small-text{
+    font-size: 0.8em;
+    color: #777
+}
+
+/** Styling for the username field **/
+label.item.has-error {  
+  border-bottom: 2px solid red;
+}
+
+/** Styling for the password field when an error has been resolved**/
+label.item.valid-lr {
+  border-bottom: 2px solid green;
+}
+
+.radio-content{
+  display: inline !important;
+  background: #777
+}
+.label:hover {
+    text-decoration: none;
+}
+.label {
+    border-color: #b2b2b2;
+    background-color: #f8f8f8;
+    color: #444;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    padding: 0 5px;
+    min-width: 14px;
+    min-height: 18px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 2px;
+    vertical-align: top;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    line-height: 14px;
+}
+.label-calm{
+    border-color: #0a9dc7;
+    background-color: #11c1f3;
+    color: #fff;
+}
+.label-positive{
+    border-color: #0c60ee;
+    background-color: #387ef5;
+    color: #fff;
+}
+.label-energized{
+    border-color: #e6b500;
+    background-color: #ffc900;
+    color: #fff;
+}
+.label-assertive{
+    border-color: #e42112;
+    background-color: #ef473a;
+    color: #fff;
+}
+.label-balanced{
+    border-color: #28a54c;
+    background-color: #33cd5f;
+    color: #fff;
+}
+.label-stable{
+    border-color: #b2b2b2;
+    background-color: #f8f8f8;
+    color: #444;
+}
+.badge-container{
+      position: relative;
+}
+
+/*
+ * http://docs.angularjs.org/api/ng/directive/ngShow#usage_animations
+ */
+.list .item.item-accordion {
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+.list .item.item-accordion.ng-hide {
+  line-height: 0px;
+}
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+  display: block !important;
+}

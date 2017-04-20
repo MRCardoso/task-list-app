@@ -1,0 +1,47 @@
+<ion-view cache-view="false">    
+    <ion-nav-title>
+        Manage Task
+    </ion-nav-title>
+    <ion-nav-buttons side="right">
+        <a href="#/app/taskAdd" class="button button-small button-positive">
+            <i class="ion-plus"></i>
+        </a>
+    </ion-nav-buttons>
+    <ion-content>
+        <div ng-init="find()">
+            <div class="bar bar-header item-input-inset">
+                <label class="item-input-wrapper">
+                    <i class="icon ion-ios-search placeholder-icon"></i>
+                    <input type="search" placeholder="Search" ng-model="filter">
+                </label>
+                <i class="badge badge-positive">{{filtered.length}}</i>
+            </div>
+            
+            <ion-list show-delete="showRemove">
+                <ion-item ng-repeat="item in filtered = (tasks | filter:filter)">
+                    <div class="row">
+                        <div class="col col-90">
+                            <ion-delete-button class="ion-minus-circled" ng-click="remove($index,$event)"></ion-delete-button>
+                            <ion-option-button class="ion-edit button-royal" ui-sref="app.taskedit({'taskId':$index})"></ion-option-button>
+                            <ion-option-button class="ion-eye button-stable" ui-sref="app.taskview({'taskId':$index})"></ion-option-button>
+
+                            <h2 ng-bind="item.title"></h2>                        
+                        </div>
+                        <div class="col col-10">
+                            <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
+                            <!--<render-label type="'status'" labels="statuses" index="item.status"></render-label>-->
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar-light">
+        <label class="toggle toggle-assertive">
+        <input type="checkbox" ng-model="showRemove">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </ion-footer-bar>
+</ion-view>

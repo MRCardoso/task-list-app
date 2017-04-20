@@ -1,0 +1,21 @@
+<ion-view>
+    <ion-nav-buttons side="left">
+        <a class="button button-clear" ng-href="#/app/task">
+            <i class="ion-android-arrow-back"></i>
+        </a>
+    </ion-nav-buttons>
+    <ion-nav-title>
+        Help
+    </ion-nav-title>
+    <ion-content>
+        <div ng-repeat="topic in topics">
+            <div class="item">
+                <h3>{{topic.name}}</h3>
+                <div class="item-text-wrap">
+                    {{topic.content}}
+                </div>
+                <!--<img ng-src="/img/image-{{topic.id}}.png" width="80%" ng-click="openModal(topic)">-->
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
