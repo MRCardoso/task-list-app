@@ -1,2 +1,2 @@
-## Begin project
+## MRC - Task List
     a simples App with ionic to create a task list
