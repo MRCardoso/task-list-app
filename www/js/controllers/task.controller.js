@@ -17,11 +17,16 @@ app.controller('TaskController', [
             {                
                 $ionicPlatform.ready(function()
                 {
-                    console.log('entrou--');
                     $cordovaBadge.hasPermission().then(function(yes) 
                     {
-                        $cordovaBadge.set(value).then(function() {}, function(err) {
-                            $ionicPopup.alert({title: 'error', template: 'error occurred in add badge'});
+                        var action;
+                        if( value == 0 ) 
+                            action = $cordovaBadge.clear();
+                        else 
+                            action = $cordovaBadge.set(value);
+
+                        action.then(function() {}, function(err) {
+                            $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
                         });
                     }, function(no) {
                         $ionicPopup.alert({title: 'error', template: 'Without permission'});
@@ -33,11 +38,10 @@ app.controller('TaskController', [
         $scope.find = function()
         {
             $scope.tasks = task.getTasks();
-            var openeds = $scope.tasks.filter(row => row.situation == 1);
+            var openeds = $scope.tasks.filter(function(row){ return row.situation == 1; });
+            // var openeds = $scope.tasks.filter(row => row.situation == 1);
             
-            if( openeds.length > 0 ){
-                $scope.addBadge(openeds.length);
-            }
+            $scope.addBadge(openeds.length);
         }
         $scope.findOne = function()
         {
@@ -106,5 +110,5 @@ app.controller('TaskController', [
                 this.formData.title == '' || this.formData.title == null
                 || this.formData.start_date == '' || this.formData.start_date == null
             );
-        };        
+        };
 }]);
