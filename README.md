@@ -1,2 +1,3 @@
 ## MRC - Task List
-    a simples App with ionic to create a task list
+    A app developed with Ionic Framework.
+    Your objective is the criation of simple tasks, orranging the activities in your day by day
