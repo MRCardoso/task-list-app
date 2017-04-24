@@ -111,4 +111,7 @@ app.controller('TaskController', [
                 || this.formData.start_date == '' || this.formData.start_date == null
             );
         };
+        $scope.viewTask = function(id){
+            $state.go('app.taskview', {taskId:id});
+        }
 }]);

@@ -1,7 +1,7 @@
 <ion-side-menus enable-menu-with-back-views="true">
     <ion-side-menu-content>
         <ion-nav-bar class="bar-stable">
-            <!--<ion-nav-back-button></ion-nav-back-button>-->
+            <ion-nav-back-button></ion-nav-back-button>
 
             <ion-nav-buttons side="left">
                 <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -19,8 +19,14 @@
                 <!--<ion-item menu-close ng-click="login()">
                     Login
                 </ion-item>-->
+                <ion-item menu-close href="#/app/home">
+                    <i class="ion-home"></i> Home
+                </ion-item>
+                <ion-item menu-close href="#/app/task">
+                    <i class="ion-android-list"></i> Task
+                </ion-item>
                 <ion-item menu-close href="#/app/help">
-                    <i class="ion-android-alert"></i> Help
+                    <i class="ion-information-circled"></i> Help
                 </ion-item>
             </ion-list>
         </ion-content>

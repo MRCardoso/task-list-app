@@ -1,0 +1,60 @@
+<ion-view>
+    <ion-nav-title>
+        <i class="ion-calendar"></i>
+        Home
+    </ion-nav-title>
+    <ion-content>
+        
+        <div class="card">
+            <div class="item item-divider" ng-click="showCalendar=!showCalendar">
+                <i class="icon" ng-class="showCalendar ? 'ion-ios-calendar-outline' : 'ion-ios-calendar'"></i>
+                <span ng-bind="date | date:'fullDate'"></span>                
+            </div>
+            <div class="" ng-show="showCalendar">
+                <mc-calendar></mc-calendar>
+            </div>
+        </div>
+
+        <div class="list card" ng-show="openTasks.length>0">
+            <div class="item item-positive">
+                <span class="badge badge-stable">{{openTasks.length}}</span>
+                Scheduled Tasks
+            </div>
+
+            <ion-list>
+                <div ng-repeat="task in openTasks">
+                    <ion-item class="item-stable" ng-click="toggleGroup(task)" ng-class="{active: isGroupShown(task)}">
+                        <i class="icon" ng-class="isGroupShown(task) ? 'ion-android-arrow-dropdown-circle' : 'ion-android-arrow-dropright-circle'"></i>
+                        {{task.title}}
+                    </ion-item>
+                    <ion-item class="item-accordion" ng-show="isGroupShown(task)">
+                        <div class="item-text-wrap">
+                            {{task.description}}
+                        </div>
+                        <div class="row">
+                            <small>
+                                Start: {{task.start_date | date:'dd/MM/yyyy'}}
+                                <i ng-show="task.end_date!=null">
+                                    End: {{task.end_date | date:'dd/MM/yyyy'}}
+                                </i>
+                            </small>
+                        </div>
+                        <div class="item-gray">
+                            <div class="row">
+                                <div class="col col-50">
+                                    <a ng-href="#/app/taskView/{{task.current}}" class="label label-positive">
+                                        <i class="ion-eye"></i>
+                                    </a>
+                                    <render-label type="'status'" labels="statuses" index="task.status"></render-label>
+                                    <render-label type="'priority'" labels="priorities" index="task.priority"></render-label>
+                                    <render-label type="'situation'" labels="situations" index="task.situation"></render-label>                                
+                                </div>
+                            </div>
+                        </div>
+                    </ion-item>
+                </div>
+            </ion-list>
+        </div>
+
+    </ion-content>
+</ion-view>

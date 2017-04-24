@@ -1,0 +1,27 @@
+<table class="table" id="table-calendar">
+    <thead>
+        <tr>
+            <td colspan="1" role="button" ng-click="previous()">
+                <i class="ion-chevron-left"></i>
+            </td>
+            <td colspan="5">
+                {{date | date:'LLLL yyyy'}}
+            </td>
+            <td colspan="1" role="button" ng-click="next()">
+                <i class="ion-chevron-right"></i>
+            </td>
+        </tr>
+        <tr>
+            <th ng-repeat="day in days">
+                {{day.day}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="weeks in monthDays">
+            <td ng-repeat="day in weeks" ng-class="{'line-active': day.isCurrentDay, 'line-inactive': !day.isCurrentMonth}" ng-click="selectDate(day.d, $event)">
+                {{day.d | date:'dd'}}
+            </td>
+        </tr>
+    </tbody>
+</table>

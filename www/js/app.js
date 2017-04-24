@@ -24,13 +24,25 @@ app.run(function($ionicPlatform, $ionicPopup)
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+     // note that you can also chain configs
+    $ionicConfigProvider.navBar.alignTitle('center');
+    
     $stateProvider
     .state('app', {
         url: '/app',
         abstract: true,
         templateUrl: 'templates/menu.html',
         controller: 'loginController'
+    })
+    .state('app.home', {
+        url: '/home',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/home.html',
+                controller: 'HomeController'
+            }
+        }
     })
     .state('app.help', {
         url: '/help',
@@ -78,5 +90,5 @@ app.run(function($ionicPlatform, $ionicPopup)
         }
     });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/task');
+  $urlRouterProvider.otherwise('/app/home');
 });

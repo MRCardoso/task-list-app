@@ -1,20 +1,20 @@
 <ion-view>
-    <ion-nav-buttons side="left">
-        <a class="button button-clear" ng-href="#/app/task">
-            <i class="ion-android-arrow-back"></i>
-        </a>
-    </ion-nav-buttons>
     <ion-nav-title>
-        Help
+        <i class="ion-social-angular"></i>
+        <i class="ion-social-html5"></i>
+        <i class="ion-social-javascript"></i>
+        <i class="ion-social-css3"></i>
+        <i class="ion-ionic"></i>
     </ion-nav-title>
     <ion-content>
-        <div ng-repeat="topic in topics">
-            <div class="item">
-                <h3>{{topic.name}}</h3>
-                <div class="item-text-wrap">
-                    {{topic.content}}
+        <div class="card">
+            <div ng-repeat="topic in topics | orderBy: '-id'">
+                <div class="item item-{{$index%2==0? 'stable':'light'}}">
+                    <h3 class="item-text-title">{{topic.name}}</h3>
+                    <div class="item-text-wrap">
+                        {{topic.content}}
+                    </div>
                 </div>
-                <!--<img ng-src="/img/image-{{topic.id}}.png" width="80%" ng-click="openModal(topic)">-->
             </div>
         </div>
     </ion-content>

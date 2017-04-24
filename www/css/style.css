@@ -90,3 +90,38 @@ label.item.valid-lr {
 .list .item.item-accordion.ng-hide-remove {
   display: block !important;
 }
+
+.table{
+    width: 100%
+}
+.table th {
+    background-color: #387ef5;
+    color: #F4F4F4
+}
+.table tr th, .table tr td{
+    width: 4%;
+    padding: 2% 0.8%;
+    border: 1px solid #CCC;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+.line-active{
+    background-color: #387ef5;
+    color: #E5E5E5;
+    font-weight: bold;
+}
+.line-selected{
+    color: #b2b2b2;
+    background-color: #f8f8f8 !important;
+}
+.line-inactive{
+    background-color: #E5E5E5;
+    opacity: 0.3;
+    font-weight: normal !important;
+}
+.item-gray{
+    background-color: #f8f8f8;
+    line-height: 0;
+    margin: 0.9em 0;
+}
