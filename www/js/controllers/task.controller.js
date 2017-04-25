@@ -54,6 +54,7 @@ app.controller('TaskController', [
                 if( data.end_date != null )
                     data.end_date = new Date(data.end_date);
                 data.isNewRecord = false;
+                data.current = $state.params.taskId;
             }
             $scope.formData = task.populateFields(data);
         };

@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view cache-view="false">
     <ion-nav-title>
         <i class="ion-calendar"></i>
         Home
@@ -42,12 +42,12 @@
                         <div class="item-gray">
                             <div class="row">
                                 <div class="col col-50">
-                                    <a ng-href="#/app/taskView/{{task.current}}" class="label label-positive">
-                                        <i class="ion-eye"></i>
+                                    <a ng-href="#/app/taskView/{{task.current}}" class="label label-positive no-decoration" title="View">
+                                        <i class="ion-eye"></i> View
                                     </a>
                                     <render-label type="'status'" labels="statuses" index="task.status"></render-label>
                                     <render-label type="'priority'" labels="priorities" index="task.priority"></render-label>
-                                    <render-label type="'situation'" labels="situations" index="task.situation"></render-label>                                
+                                    <render-label type="'situation'" labels="situations" index="task.situation"></render-label>
                                 </div>
                             </div>
                         </div>

@@ -5,6 +5,11 @@
             {{ formData.isNewRecord ? 'Create' : 'Update' }} Task
         </ion-nav-title>
     </ion-nav-bar>
+    <ion-nav-buttons side="right">
+        <a href="#/app/taskView/{{formData.current}}" class="button button-positive" title="View" ng-if="formData.isNewRecord==false">
+            <i class="ion-eye"></i>
+        </a>
+    </ion-nav-buttons>
     <ion-content>
         <form ng-submit="save()" class="list">
             <label class="item item-input" ng-class="{ 'has-error' : formData.title=='' || formData.title==null, 'valid-lr': formData.title.length>0}">

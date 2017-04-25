@@ -4,7 +4,7 @@
         Manage Task
     </ion-nav-title>
     <ion-nav-buttons side="right">
-        <a href="#/app/taskAdd" class="button button-outline button-dark">
+        <a href="#/app/taskAdd" class="button button-positive">
             <i class="ion-plus"></i>
         </a>
     </ion-nav-buttons>
@@ -23,12 +23,10 @@
                     <div class="row" ng-click="viewTask($index)">
                         <div class="col col-90">
                             <ion-delete-button class="ion-minus-circled" ng-click="remove($index,$event)"></ion-delete-button>
-                            <ion-option-button class="ion-edit button-royal" ui-sref="app.taskedit({'taskId':$index})"></ion-option-button>
+                            <ion-option-button class="ion-edit button-positive" ui-sref="app.taskedit({'taskId':$index})"></ion-option-button>
                             <!--<ion-option-button class="ion-eye button-stable" ui-sref="app.taskview({'taskId':$index})"></ion-option-button>-->
 
                             <h2 ng-bind="item.title"></h2>
-                            {{item.start_date | date:'dd/MM/yyyy'}}
-                            {{item.end_date | date:'dd/MM/yyyy'}}
                         </div>
                         <div class="col col-10">
                             <render-label type="'situation'" labels="situations" index="item.situation"></render-label>

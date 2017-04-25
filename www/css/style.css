@@ -125,3 +125,6 @@ label.item.valid-lr {
     line-height: 0;
     margin: 0.9em 0;
 }
+.no-decoration{
+    text-decoration: none
+}

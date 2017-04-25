@@ -1,7 +1,7 @@
 app.directive('renderLabel', function(){
     return {
         restrict: 'E',
-        template: '<label class="label label-{{labelList[index].class}}">{{labelList[index].name}}</label>',
+        template: '<label class="label label-{{labelList[index].class}}" title="{{type}}">{{labelList[index].name}}</label>',
         scope: {
             labels: '=labels',
             index: '=index',
