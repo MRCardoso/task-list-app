@@ -8,7 +8,7 @@
         <div class="card">
             <div class="item item-divider" ng-click="showCalendar=!showCalendar">
                 <i class="icon" ng-class="showCalendar ? 'ion-ios-calendar-outline' : 'ion-ios-calendar'"></i>
-                <span ng-bind="date | date:'fullDate'"></span>                
+                <span ng-bind="date | date:'fullDate'"></span>
             </div>
             <div class="" ng-show="showCalendar">
                 <mc-calendar></mc-calendar>
@@ -16,8 +16,8 @@
         </div>
 
         <div class="list card" ng-show="openTasks.length>0">
-            <div class="item item-positive">
-                <span class="badge badge-stable">{{openTasks.length}}</span>
+            <div class="item item-blue-light">
+                <span class="badge">{{openTasks.length}}</span>
                 Scheduled Tasks
             </div>
 
@@ -42,7 +42,7 @@
                         <div class="item-gray">
                             <div class="row">
                                 <div class="col col-50">
-                                    <a ng-href="#/app/taskView/{{task.current}}" class="label label-positive no-decoration" title="View">
+                                    <a ng-href="#/app/taskView/{{task.current}}" class="label label-blue no-decoration" title="View">
                                         <i class="ion-eye"></i> View
                                     </a>
                                     <render-label type="'status'" labels="statuses" index="task.status"></render-label>

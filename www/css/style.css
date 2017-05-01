@@ -128,3 +128,71 @@ label.item.valid-lr {
 .no-decoration{
     text-decoration: none
 }
+/**
+* my own colors
+*/
+.button-green-light{
+    background-color: #2EDF7E !important;
+}
+.button-green-light2{
+    background-color: #2EAF7E !important;
+}
+.button-green, .label-green, .badge-green, .item-green,.bar-green {
+    /*background-color: #7EA97D !important;*/
+    background-color: #29B36E !important;    
+    /*color: #DFE8B2 !important;    */
+    /*text-shadow: 0 0 2px #222;*/
+    color: #FEFEFE !important;
+}
+
+.button-blue, 
+.bar-blue, 
+.item-blue, 
+.badge-blue, 
+.label-blue {
+    background-color: #3E7FAD !important;    
+    color: #FFF8F2 !important;    
+}
+.button-blue:hover, .bar-blue button:hover {
+    background-color: #4E8FBD !important;    
+    color: #FFF8F2 !important;
+}
+.button-blue-light, 
+.bar-blue-light, 
+.item-blue-light, 
+.badge-blue-light, 
+.label-blue-light{
+    background-color: #5E8FCD !important;
+    color: #FFF8F2 !important;
+}
+.item-blue span, .item-blue-light span{
+    background-color: #FEFEFE !important;
+    color: #5E8FCD !important;
+}
+.button-blue-inverse{
+    color: #FFF8F2 !important;
+    background-color: #5E8FCD !important;
+}
+.button-blue-inverse:hover, .button-blue-inverse:link, .button-blue-inverse:active {
+    color: #FFF8F2 !important;
+    background-color: #6E9FDD !important;
+    border: none
+}
+.bar-blue .title, 
+.bar-blue-light .title, 
+.bar-gold .title,
+.bar-blue button, 
+.bar-blue-light button {
+    color: #FFF8FF !important;
+    text-shadow: 0 1px 1px #2D2D2D;
+}
+.bar-gold{
+    background-color: #DFE8B2 !important;
+    color: #6E9FDD !important;
+}
+.label-blue, .label-blue-light{
+    border: 1px solid #FFF;
+}
+.right{
+    float: right
+}

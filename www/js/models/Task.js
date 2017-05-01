@@ -43,10 +43,14 @@ function Task()
     {
         return angular.extend({}, fields, data || {});
     };
+    this.allOpened = function()
+    {
+        var openeds = this.getTasks().filter(function(row){ return row.situation == 1; });
+        return openeds.length;
+    }
 
     function store(data)
     {
-        console.log('save');
         localStorage.setItem('task', angular.toJson(data));
     }
     

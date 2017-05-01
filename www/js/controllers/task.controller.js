@@ -1,6 +1,6 @@
 app.controller('TaskController', [
-    '$scope', '$ionicModal', '$ionicListDelegate', '$ionicPopup', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge',
-    function($scope,$ionicModal,$ionicListDelegate,$ionicPopup, $ionicHistory,$state, $ionicPlatform, $cordovaBadge)
+    '$scope', '$ionicModal', '$ionicListDelegate', '$ionicPopup', '$ionicHistory','$state',
+    function($scope,$ionicModal,$ionicListDelegate,$ionicPopup, $ionicHistory,$state)
     {
         var task = new Task();
         var labels = app.appLabels;
@@ -11,37 +11,9 @@ app.controller('TaskController', [
         $scope.showRemove = false;    
         $scope.delPop = null;
 
-        $scope.addBadge = function(value)
-        {
-            if( window.cordova )
-            {                
-                $ionicPlatform.ready(function()
-                {
-                    $cordovaBadge.hasPermission().then(function(yes) 
-                    {
-                        var action;
-                        if( value == 0 ) 
-                            action = $cordovaBadge.clear();
-                        else 
-                            action = $cordovaBadge.set(value);
-
-                        action.then(function() {}, function(err) {
-                            $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
-                        });
-                    }, function(no) {
-                        $ionicPopup.alert({title: 'error', template: 'Without permission'});
-                    });
-                });
-            }            
-        };
-
         $scope.find = function()
         {
             $scope.tasks = task.getTasks();
-            var openeds = $scope.tasks.filter(function(row){ return row.situation == 1; });
-            // var openeds = $scope.tasks.filter(row => row.situation == 1);
-            
-            $scope.addBadge(openeds.length);
         }
         $scope.findOne = function()
         {
@@ -70,6 +42,7 @@ app.controller('TaskController', [
                     text: '<b>OK</b>',
                     type: 'button-positive', 
                     onTap: function(e){
+                        $scope.$root.openedTask = task.allOpened();
                         $ionicHistory.goBack();
                     }
                 }]
@@ -95,8 +68,9 @@ app.controller('TaskController', [
                             type: 'button-positive', 
                             onTap: function(e){
                                 $scope.delPop = null;
-                                task.remove(index);
-                                $scope.find();
+                                $scope.$root.openedTask = task.allOpened();
+                                task.remove(index);                                
+                                $scope.find();                                
                             }
                         }
                     ]

@@ -5,10 +5,17 @@
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('starter', ['ionic', 'ngCordova']);
 
-app.run(function($ionicPlatform, $ionicPopup) 
+app.run(function($ionicPlatform, $ionicPopup, $ionicLoading, $rootScope, $cordovaBadge) 
 {
-    $ionicPlatform.ready(function() {
-        if(window.cordova && window.cordova.plugins.Keyboard) {
+    $ionicPlatform.ready(function()
+    {
+        var scopeTask = new Task();
+        $rootScope.openedTask = scopeTask.allOpened();
+        scopeTask = null;
+        // $ionicLoading.show({template: 'Loading...',duration: 2000}).then(function(){});
+        
+        if(window.cordova && window.cordova.plugins.Keyboard) 
+        {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -17,6 +24,23 @@ app.run(function($ionicPlatform, $ionicPopup)
             // from snapping when text inputs are focused. Ionic handles this internally for
             // a much nicer keyboard experience.
             cordova.plugins.Keyboard.disableScroll(true);
+
+            $rootScope.$watch('openedTask', function(value)
+            {
+                $cordovaBadge.hasPermission().then(function(yes) {
+                    var action;
+                    if( value == 0 ) 
+                        action = $cordovaBadge.clear();
+                    else 
+                        action = $cordovaBadge.set(value);
+
+                    action.then(function() {}, function(err) {
+                        $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
+                    });
+                }, function(no) {
+                    $ionicPopup.alert({title: 'error', template: 'Without permission'});
+                });                
+            })
         }
         if(window.StatusBar) {
             StatusBar.styleDefault();
