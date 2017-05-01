@@ -43,9 +43,10 @@ function Task()
     {
         return angular.extend({}, fields, data || {});
     };
-    this.allOpened = function()
+    this.allOpened = function(tasks)
     {
-        var openeds = this.getTasks().filter(function(row){ return row.situation == 1; });
+        var tasks = tasks == undefined ? this.getTasks() : tasks; 
+        var openeds = tasks.filter(function(row){ return row.situation == 1; });
         return openeds.length;
     }
 

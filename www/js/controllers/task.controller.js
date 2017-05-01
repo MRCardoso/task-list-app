@@ -1,6 +1,6 @@
 app.controller('TaskController', [
-    '$scope', '$ionicModal', '$ionicListDelegate', '$ionicPopup', '$ionicHistory','$state',
-    function($scope,$ionicModal,$ionicListDelegate,$ionicPopup, $ionicHistory,$state)
+    '$scope', '$ionicModal', '$ionicListDelegate', '$ionicPopup', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge', '$cordovaToast',
+    function($scope,$ionicModal,$ionicListDelegate,$ionicPopup, $ionicHistory,$state, $ionicPlatform, $cordovaBadge, $cordovaToast)
     {
         var task = new Task();
         var labels = app.appLabels;
@@ -11,9 +11,34 @@ app.controller('TaskController', [
         $scope.showRemove = false;    
         $scope.delPop = null;
 
+        $scope.addBadge = function(value)
+        {
+            if( window.cordova )
+            {                
+                $ionicPlatform.ready(function()
+                {
+                    $cordovaBadge.hasPermission().then(function(yes) 
+                    {
+                        var action;
+                        if( value == 0 ) 
+                            action = $cordovaBadge.clear();
+                        else 
+                            action = $cordovaBadge.set(value);
+
+                        action.then(function() {console.log('added()', value)}, function(err) {
+                            $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
+                        });
+                    }, function(no) {
+                        $ionicPopup.alert({title: 'error', template: 'Without permission'});
+                    });
+                });
+            }            
+        };
+
         $scope.find = function()
         {
             $scope.tasks = task.getTasks();
+            $scope.addBadge(task.allOpened($scope.tasks));
         }
         $scope.findOne = function()
         {
@@ -33,20 +58,10 @@ app.controller('TaskController', [
 
         $scope.save = function()
         {
-            task.save(this.formData, $state.params.taskId);
-            var myPopup = $ionicPopup.alert({
-                template: "Task created with successful!!",
-                title: 'Success',
-                scope: $scope,
-                buttons: [{
-                    text: '<b>OK</b>',
-                    type: 'button-positive', 
-                    onTap: function(e){
-                        $scope.$root.openedTask = task.allOpened();
-                        $ionicHistory.goBack();
-                    }
-                }]
-            });
+            task.save(this.formData, $state.params.taskId);            
+            $cordovaToast.show("Task was save with successful!!", 'long', 'top');
+            $scope.addBadge(task.allOpened());
+            $ionicHistory.goBack();
         };
 
         $scope.remove = function(index, event)
@@ -55,7 +70,7 @@ app.controller('TaskController', [
             {
                 $scope.delPop = $ionicPopup.confirm({
                     template: "Do you want remove this task?",
-                    title: 'Comfirmation',
+                    title: 'Confirmation',
                     scope: $scope,
                     buttons: [
                         {
@@ -68,7 +83,7 @@ app.controller('TaskController', [
                             type: 'button-positive', 
                             onTap: function(e){
                                 $scope.delPop = null;
-                                $scope.$root.openedTask = task.allOpened();
+                                $cordovaToast.show("Task was deleted with successful!!", 'long', 'top');
                                 task.remove(index);                                
                                 $scope.find();                                
                             }
