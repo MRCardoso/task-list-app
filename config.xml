@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="br.com.mrcardozodev.tasklist" version="0.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="br.com.mrcardozodev.tasklist" version="0.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>TaskList</name>
   <description>
         An Ionic Framework and Cordova project.
-    </description>
+  </description>
   <author email="mrcardoso.playfast@gmail.com" href="http://example.com/">
       Marlon R Cardoso
   </author>
