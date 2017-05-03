@@ -24,6 +24,11 @@ app.controller('HelpController', ["$scope", "$ionicModal", function ($scope, $io
             "id": 5,
             "name": 'Badge',
             "content": "Now have badge in the icon of the app, that shows the total of tasks 'opened' on the moment."
+        },
+        {
+            "id": 6,
+            "name": 'Calender',
+            "content": "Now have a home, with a calendar to filter task according the day selected."
         }
     ];
 }])

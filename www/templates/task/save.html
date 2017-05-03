@@ -2,11 +2,11 @@
     <ion-nav-bar class="bar-blue-light">
         <ion-nav-back-button></ion-nav-back-button>
         <ion-nav-title>
-            {{ formData.isNewRecord ? 'Create' : 'Update' }} Task
+            {{ formData.id ? 'Update' : 'Create' }} Task
         </ion-nav-title>
     </ion-nav-bar>
     <ion-nav-buttons side="right">
-        <a href="#/app/taskView/{{formData.current}}" class="button button-blue-inverse" title="View" ng-if="formData.isNewRecord==false">
+        <a href="#/app/taskView/{{formData.id}}" class="button button-blue-inverse" title="View" ng-if="formData.id">
             <i class="ion-eye"></i>
         </a>
     </ion-nav-buttons>

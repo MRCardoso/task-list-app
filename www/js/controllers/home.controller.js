@@ -1,19 +1,11 @@
-app
-.controller('HomeController', ["$scope", "$rootScope", "$filter", "$ionicLoading", function ($scope, $rootScope, $filter, $ionicLoading) {
+app.controller('HomeController', ["$scope", "$rootScope", "$filter", "$ionicLoading", function ($scope, $rootScope, $filter, $ionicLoading)
+{
     $scope.date = new Date();
     $scope.showCalendar = true;
-    var task = new Task();
-    
-    // $ionicLoading
-    // .show({template: 'Loading...',duration: 1000})
-    // .then(function(){
-    //     console.log("The loading indicator is now displayed");
-    // });
-
-    $scope.findOpen = function(){
-        $scope.openTasks = task.getTasks().filter(function(row,i)
+    $scope.findOpen = function()
+    {
+        $scope.openTasks = new Task().getTasks().filter(function(row,i)
         {
-            row.current = i;
             var current = $filter('date')($scope.date, 'yyyy-MM-dd');
             var startDate = $filter('date')(new Date(row.start_date), 'yyyy-MM-dd');   
             // var endDate = row.end_date != null ? $filter('date')(new Date(row.end_date), 'yyyy-MM-dd') : null;

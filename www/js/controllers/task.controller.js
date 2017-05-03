@@ -25,7 +25,7 @@ app.controller('TaskController', [
                         else 
                             action = $cordovaBadge.set(value);
 
-                        action.then(function() {console.log('added()', value)}, function(err) {
+                        action.then(function() {console.log('added', value)}, function(err) {
                             $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
                         });
                     }, function(no) {
@@ -37,8 +37,7 @@ app.controller('TaskController', [
 
         $scope.find = function()
         {
-            $scope.tasks = task.getTasks();
-            $scope.addBadge(task.allOpened($scope.tasks));
+            $scope.tasks = task.getTasks();            
         }
         $scope.findOne = function()
         {
@@ -48,10 +47,7 @@ app.controller('TaskController', [
             {
                 data = task.getTasks($state.params.taskId);
                 data.start_date = new Date(data.start_date);
-                if( data.end_date != null )
-                    data.end_date = new Date(data.end_date);
-                data.isNewRecord = false;
-                data.current = $state.params.taskId;
+                if( data.end_date != null ) data.end_date = new Date(data.end_date);
             }
             $scope.formData = task.populateFields(data);
         };
@@ -84,7 +80,8 @@ app.controller('TaskController', [
                             onTap: function(e){
                                 $scope.delPop = null;
                                 $cordovaToast.show("Task was deleted with successful!!", 'long', 'top');
-                                task.remove(index);                                
+                                task.remove(index);
+                                $scope.addBadge(task.allOpened());
                                 $scope.find();                                
                             }
                         }

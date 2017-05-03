@@ -70,7 +70,11 @@ app
                     arrayDays[day].push({
                         d: weekDays[i].d,
                         isCurrentMonth: weekDays[i].current,
-                        isCurrentDay: (current.getDate() == weekDays[i].d.getDate() && current.getMonth() == weekDays[i].d.getMonth())
+                        isCurrentDay: (
+                            current.getDate() == weekDays[i].d.getDate()
+                            && current.getMonth() == weekDays[i].d.getMonth()
+                            && current.getFullYear() == weekDays[i].d.getFullYear()
+                        )
                     });
                     if( week >= 7){
                         week = 0;

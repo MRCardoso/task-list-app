@@ -3,6 +3,10 @@ function Task()
     this.getTasks = function(id)
     {
         var data = angular.fromJson(localStorage.getItem('task'));
+        angular.forEach(data, function(row, index)
+        {
+            data[index].id = index;
+        });
         if( id != undefined && data[id] != undefined)
             return data[id];
         return data || [];
@@ -43,12 +47,11 @@ function Task()
     {
         return angular.extend({}, fields, data || {});
     };
-    this.allOpened = function(tasks)
+    this.allOpened = function()
     {
-        var tasks = tasks == undefined ? this.getTasks() : tasks; 
-        var openeds = tasks.filter(function(row){ return row.situation == 1; });
+        var openeds = this.getTasks().filter(function(row){ return row.situation == 1; });
         return openeds.length;
-    }
+    };
 
     function store(data)
     {

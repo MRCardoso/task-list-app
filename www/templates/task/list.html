@@ -20,12 +20,10 @@
             
             <ion-list show-delete="showRemove">
                 <ion-item ng-repeat="item in filtered = (tasks | filter:filter)">
-                    <div class="row" ng-click="viewTask($index)">
+                    <div class="row" ng-click="viewTask(item.id)">
                         <div class="col col-90">
-                            <ion-delete-button class="ion-minus-circled" ng-click="remove($index,$event)"></ion-delete-button>
-                            <ion-option-button class="ion-edit button-blue" ui-sref="app.taskedit({'taskId':$index})"></ion-option-button>
-                            <!--<ion-option-button class="ion-eye button-stable" ui-sref="app.taskview({'taskId':$index})"></ion-option-button>-->
-
+                            <ion-delete-button class="ion-minus-circled" ng-click="remove(item.id,$event)"></ion-delete-button>
+                            <ion-option-button class="ion-edit button-blue" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
                             <h2 ng-bind="item.title"></h2>
                         </div>
                         <div class="col col-10">

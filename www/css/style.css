@@ -95,7 +95,7 @@ label.item.valid-lr {
     width: 100%
 }
 .table th {
-    background-color: #387ef5;
+    background-color: #6E9FDD;
     color: #F4F4F4
 }
 .table tr th, .table tr td{
@@ -107,7 +107,7 @@ label.item.valid-lr {
     font-weight: 600;
 }
 .line-active{
-    background-color: #387ef5;
+    background-color: #6E9FDD;
     color: #E5E5E5;
     font-weight: bold;
 }
