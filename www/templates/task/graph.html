@@ -1,0 +1,34 @@
+<ion-view ng-init="createChart()">
+    <ion-nav-title>
+        <i class="ion-pie-graph"></i> 
+        Graph
+    </ion-nav-title>
+
+    <ion-content scroll="false">
+        <ion-slide-box on-slide-changed="slideChanged($index)" show-pager="false">
+            <ion-slide ng-repeat="item in charts">
+                <div class="box blue">
+                    <h1>{{item.name}}</h1>
+                    <canvas 
+                        id="polar-area" 
+                        class="chart chart-polar-area"
+                        chart-data="item.data" 
+                        chart-labels="item.labels" 
+                        chart-colors="item.colors" 
+                        chart-options="options">
+                    </canvas>
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+        
+        <div class="bar bar-footer bar-blue">
+            <button class="button button-blue no-animation" ng-click="previous()" ng-show="slideIndex > 0">
+                <i class="ion-chevron-left"></i>
+            </button>
+            
+            <button class="button button-blue no-animation" ng-click="next()" ng-show="slideIndex != 2">
+                <i class="ion-chevron-right"></i>
+            </button>                    
+        </div>
+    </ion-content>
+</ion-view>

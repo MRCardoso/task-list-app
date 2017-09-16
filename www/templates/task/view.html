@@ -1,12 +1,12 @@
 <ion-view ng-init="findOne()" cache-view="false">
-    <ion-nav-bar class="bar-blue-light">
+    <!-- <ion-nav-bar class="bar-blue-light">
         <ion-nav-back-button></ion-nav-back-button>
         <ion-nav-title>
             {{formData.title}}
         </ion-nav-title>
-    </ion-nav-bar>
+    </ion-nav-bar> -->
     <ion-nav-buttons side="right">
-        <a href="#/app/taskEdit/{{formData.id}}" class="button button-blue-inverse" title="Edit">
+        <a href="#/app/taskEdit/{{formData.id}}" class="button button-blue" title="Edit">
             <i class="ion-edit"></i>
         </a>
     </ion-nav-buttons>
@@ -36,7 +36,7 @@
         </div>
         <div class="item item-input">
             <div class="input-label">Created</div>
-            {{formData.created | date:'dd/MM/yyyy'}}
+            {{formData.created | date:'dd/MM/yyyy HH:mm:ss'}}
         </div>
     </ion-content>
 </ion-view>

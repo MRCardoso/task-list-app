@@ -81,7 +81,7 @@ label.item.valid-lr {
   line-height: 38px;
   padding-top: 0;
   padding-bottom: 0;
-  transition: 0.09s all linear;
+  transition: 0.09s all linear;  
 }
 .list .item.item-accordion.ng-hide {
   line-height: 0px;
@@ -93,6 +93,19 @@ label.item.valid-lr {
 
 .table{
     width: 100%
+}
+.table-item{    
+    color: #020202
+}
+.table-item th{
+    background-color: #FAFAFA;
+    width: 13%
+}
+.table-item td, .table-item th{
+    border: 1px solid #DDDDDD;
+}
+.table-item td, .table-item th{
+    padding: 2% 1%;
 }
 .table th {
     background-color: #6E9FDD;
@@ -195,4 +208,62 @@ label.item.valid-lr {
 }
 .right{
     float: right
+}
+
+.tabs-striped.tabs-background-blue .tabs {
+    background-color: #3E7FAD !important;    
+    color: #FFF8F2 !important;
+    background-image: none; 
+}
+.tabs-background-blue .tabs,
+.tabs-background-blue > .tabs {
+    background-color: #3E7FAD;
+    background-image: linear-gradient(0deg, #0c60ee, #0c60ee 50%, transparent 50%);
+    border-color: #0c60ee; 
+}
+
+.popover {
+    /* width: auto !important; */
+    width: 40% !important;
+    height: auto !important;
+    border-radius: 4px !important;
+    top: 4% !important;
+}
+.popover ion-header-bar {
+    position: relative;
+}
+.popover ion-content {
+    top: 0;
+    position: relative;
+}
+.list-button a{
+    border-radius: 4px !important;
+    display: block;
+    background: #FaFaFa;
+    color: #222222;
+    text-align: left;
+    text-decoration: none;
+    /* width: 300px; */
+    padding: 4% 10%;
+}
+.list-button a:hover{
+    border-radius: 0 !important;
+    background: #DaDaDa;
+}
+.slider {
+  height: 100%;
+  position: absolute;
+}
+.slider-slide{
+    text-align: center;
+}
+.item-child{
+    padding: 15px !important;
+    border: 1px solid #d0d0d0 !important;
+}
+.item-parent{
+    padding: 10px !important;
+}
+.center{
+    text-align: center !important;
 }

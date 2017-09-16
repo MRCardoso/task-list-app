@@ -3,10 +3,11 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var app = angular.module('starter', ['ionic', 'ngCordova']);
+var app = angular.module('starter', ['ionic', 'ngCordova', 'chart.js']);
 
-app.run(function($ionicPlatform, $ionicPopup, $ionicLoading) 
+app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate) 
 {
+    // $rootScope.scrolling = false;
     $ionicPlatform.ready(function()
     {
         // $ionicLoading.show({template: 'Loading...',duration: 2000}).then(function(){});
@@ -25,25 +26,42 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading)
         if(window.StatusBar) {
             StatusBar.styleDefault();
         }
-  });
+    });
+    
+	$rootScope.scrollEvent = function() {
+		var scrollamount = $ionicScrollDelegate.$getByHandle('scrollHandle').getScrollPosition().top;
+		if (scrollamount > 0) { // Would hide nav-bar immediately when scrolled and show it only when all the way at top. You can fiddle with it to find the best solution for you
+            $ionicNavBarDelegate.showBar(false);
+            // console.log(scrollamount);
+            // $rootScope.scrolling = true;
+		} else {
+            // $rootScope.scrolling = false;
+            // console.log(scrollamount);
+            $ionicNavBarDelegate.showBar(true);            
+		}
+	};
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
      // note that you can also chain configs
-    $ionicConfigProvider.navBar.alignTitle('center');
+    $ionicConfigProvider.navBar.alignTitle('left');
+    $ionicConfigProvider.tabs.position("top");
+    $ionicConfigProvider.tabs.style("standard");
+    $ionicConfigProvider.backButton.text('');
     
     $stateProvider
     .state('app', {
         url: '/app',
         abstract: true,
-        templateUrl: 'templates/menu.html',
-        controller: 'loginController'
+        // templateUrl: 'templates/layout/menu.html',
+        templateUrl: 'templates/layout/tabs.html',
+        // controller: 'loginController'
     })
     .state('app.home', {
         url: '/home',
         views: {
-            'menuContent': {
-                templateUrl: 'templates/home.html',
+            'app-home': {
+                templateUrl: 'templates/home/home.html',
                 controller: 'HomeController'
             }
         }
@@ -51,16 +69,16 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading)
     .state('app.help', {
         url: '/help',
         views: {
-            'menuContent': {
-                templateUrl: 'templates/help.html',
+            'app-help': {
+                templateUrl: 'templates/home/help.html',
                 controller: 'HelpController'
             }
         }
-    })
+	})
     .state('app.task', {
         url: '/task',
         views: {
-            'menuContent': {
+            'app-task': {
                 templateUrl: 'templates/task/list.html',
                 controller: 'TaskController'
             }
@@ -69,7 +87,7 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading)
     .state('app.taskadd', {
         url: '/taskAdd',
         views: {
-            'menuContent': {
+            'app-task': {
                 templateUrl: 'templates/task/save.html',
                 controller: 'TaskController'
             }
@@ -78,7 +96,7 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading)
     .state('app.taskedit', {
         url: '/taskEdit/:taskId',
         views: {
-            'menuContent': {
+            'app-task': {
                 templateUrl: 'templates/task/save.html',
                 controller: 'TaskController'
             }
@@ -87,8 +105,17 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading)
     .state('app.taskview', {
         url: '/taskView/:taskId',
         views: {
-            'menuContent': {
+            'app-task': {
                 templateUrl: 'templates/task/view.html',
+                controller: 'TaskController'
+            }
+        }
+    })
+    .state('app.taskgraph', {
+        url: '/taskGraph',
+        views: {
+            'app-task': {
+                templateUrl: 'templates/task/graph.html',
                 controller: 'TaskController'
             }
         }

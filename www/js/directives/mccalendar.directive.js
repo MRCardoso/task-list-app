@@ -2,7 +2,7 @@ app
 .directive('mcCalendar', function(){
     return {
         restrict: 'E',
-        templateUrl: 'templates/calendar.html',
+        templateUrl: 'templates/home/calendar.html',
         scope: {},
         controller: function($scope){
             $scope.date = $scope.$parent.$parent.date;

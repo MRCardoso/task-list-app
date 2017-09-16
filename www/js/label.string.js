@@ -5,19 +5,22 @@ app.appLabels = {
         {
             "id": "1",
             "name": "Low",
-            "class": "calm"
+            "class": "calm",
+            "color": "#11c1f3"
         },
         "2":
         {
             "id": "2",
             "name": "Average",
-            "class": "energized"
+            "class": "energized",
+            "color": "#ffc900"
         },
         "3":
         {
             "id": "3",
             "name": "High",
-            "class": "assertive"
+            "class": "assertive",
+            "color": "#e42112"
         }
     },
     "situation":
@@ -26,31 +29,36 @@ app.appLabels = {
         {
             "id": "1",
             "name": "Open",
-            "class":"positive"
+            "class":"positive",
+            "color": "#0c60ee"
         },
         "2":
         {
             "id": "2",
             "name": "Concluded",
-            "class":"balanced"
+            "class":"balanced",
+            "color": "#28a54c"
         },
         "3":
         {
             "id": "3",
             "name": "Canceled",
-            "class":"assertive"
+            "class":"assertive",
+            "color": "#e42112"
         },
         "4":
         {
             "id": "4",
             "name": "In process",
-            "class":"energized"
+            "class":"energized",
+            "color": "#ffc900"
         },
         "5":
         {
             "id": "5",
             "name": "Expired",
-            "class":"stable"
+            "class":"stable",
+            "color": "#b2b2b2"
         }
     },
     "status":
@@ -60,14 +68,16 @@ app.appLabels = {
             "id": "0",
             "name": "Inactive",
             "class": "stable",
-            "icon": "ban-circle"
+            "icon": "ban-circle",
+            "color": "#b2b2b2"
         },
         "1":
         {
             "id": "1",
             "name": "Active",
             "class": "balanced",
-            "icon": "ok-circle"
+            "icon": "ok-circle",
+            "color": "#28a54c"
         }
     }
 };

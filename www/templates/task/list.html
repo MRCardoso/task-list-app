@@ -1,25 +1,28 @@
 <ion-view cache-view="false">
-    <ion-nav-title class="center">
+    
+    <ion-nav-title>
         <i class="ion-android-list"></i>
-        Manage Task
+        Task
     </ion-nav-title>
+
     <ion-nav-buttons side="right">
-        <a href="#/app/taskAdd" class="button button-blue-inverse">
-            <i class="ion-plus"></i>
-        </a>
-    </ion-nav-buttons>
-    <ion-content>
+        <div>
+            <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"> 
+            </button>            
+        </div>
+    </ion-nav-buttons> 
+    <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">
         <div ng-init="find()">
             <div class="bar bar-header item-input-inset">
                 <label class="item-input-wrapper">
                     <i class="icon ion-ios-search placeholder-icon"></i>
                     <input type="search" placeholder="Search" ng-model="filter">
                 </label>
-                <i class="badge badge-blue">{{filtered.length}}</i>
+                <i class="badge badge-blue">{{$root.filtered.length}}</i>
             </div>
             
             <ion-list show-delete="showRemove">
-                <ion-item ng-repeat="item in filtered = (tasks | filter:filter)">
+                <ion-item ng-repeat="item in $root.filtered = (tasks | filter:filter)">
                     <div class="row" ng-click="viewTask(item.id)">
                         <div class="col col-90">
                             <ion-delete-button class="ion-minus-circled" ng-click="remove(item.id,$event)"></ion-delete-button>
@@ -31,15 +34,43 @@
                         </div>
                     </div>
                 </ion-item>
-            </ion-list>
+            </ion-list>        
+
+            <!--Template to render popover with options for task module-->
+            <script id="config-option.html" type="text/ng-template">
+                <ion-popover-view>
+                    <ion-content>
+                        <div class="list-button">
+                            <a href="#/app/taskAdd" ng-click="popover.hide()">
+                                <i class="ion-plus-circled"></i>
+                                New
+                            </a>
+                            <a href="#/app/taskGraph" ng-click="popover.hide()">
+                                <i class="ion-pie-graph"></i>
+                                Graph
+                            </a>
+                            <a ng-click="download()" href="" role="button">
+                                <i class="ion-android-download"></i>
+                                Export
+                            </a>
+                            <a ng-click="upload()" href="" role="button">
+                                <i class="ion-upload"></i>
+                                Import
+                            </a>
+                            <input type="file" id="upload-file-item" style="display: none"> 
+                        </div>
+                    </ion-content>
+                </ion-popover-view>
+            </script>
         </div>
     </ion-content>
     <ion-footer-bar class="bar-light">
         <label class="toggle toggle-assertive">
-        <input type="checkbox" ng-model="showRemove">
-        <div class="track">
-          <div class="handle"></div>
-        </div>
-      </label>
+            <input type="checkbox" ng-model="showRemove">
+            <div class="track">
+                <div class="handle"></div>
+            </div>
+        </label>
     </ion-footer-bar>
+
 </ion-view>

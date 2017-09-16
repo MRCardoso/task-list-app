@@ -1,12 +1,11 @@
 <ion-view ng-init="findOne()">
-    <ion-nav-bar class="bar-blue-light">
-        <ion-nav-back-button></ion-nav-back-button>
-        <ion-nav-title>
-            {{ formData.id ? 'Update' : 'Create' }} Task
-        </ion-nav-title>
-    </ion-nav-bar>
+    <ion-nav-title>
+        <h1 class="title center">
+            {{ formData.id != undefined ? 'Update' : 'Create' }} Task
+        </h1>        
+    </ion-nav-title>
     <ion-nav-buttons side="right">
-        <a href="#/app/taskView/{{formData.id}}" class="button button-blue-inverse" title="View" ng-if="formData.id">
+        <a href="#/app/taskView/{{formData.id}}" class="button button-blue" title="View" ng-if="formData.id!= undefined">
             <i class="ion-eye"></i>
         </a>
     </ion-nav-buttons>

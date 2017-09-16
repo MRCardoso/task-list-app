@@ -1,0 +1,25 @@
+ <div class="card">
+        <div class="item item-divider">
+        I'm a Header in a Card!
+    </div> 
+    <ion-list>
+        <div class="col-md-4" ng-repeat="item in charts">
+            <ion-item class="item-blue" ng-click="toggleGroup(item)" ng-class="{active: isGroupShown(item)}">
+                <i class="icon" ng-class="isGroupShown(item) ? 'ion-chevron-down' : 'ion-chevron-right'"></i>
+                {{item.name}}
+            </ion-item>
+            <ion-item class="item-accordion" ng-show="isGroupShown(item)">
+                <canvas 
+                    id="polar-area" 
+                    class="chart chart-polar-area"
+                    chart-data="item.data" 
+                    chart-labels="item.labels" 
+                    chart-colors="item.colors" 
+                    chart-options="options">
+                </canvas>
+                <pie-chart data="item.data" options="options" class="chart"></pie-chart>
+            </ion-item>
+            </div>
+        </div>
+    </ion-list> -->
+<!-- </div> 
