@@ -227,7 +227,7 @@ label.item.valid-lr {
     width: 40% !important;
     height: auto !important;
     border-radius: 4px !important;
-    top: 4% !important;
+    /* top: 4% !important; */
 }
 .popover ion-header-bar {
     position: relative;

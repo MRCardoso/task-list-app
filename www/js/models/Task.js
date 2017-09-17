@@ -133,9 +133,10 @@ function Task()
     | Create a file with Blob in csv format, an array with columns splited by ';'
     | --------------------------------------------------------------------
     */
-    this.createFileDownload = function(tasks, $filter, separator)
+    this.createFileDownload = function(tasks, $filter)
     {
         var charEncode = "\ufeff";
+        var separator = ';'
         var arrayData = [
             charEncode+["Title","Description","Priority","Situation","Status","Start","End","Created"].join(separator)+"\n"
         ];

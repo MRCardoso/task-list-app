@@ -142,7 +142,7 @@ app.controller('TaskController', [
         $scope.download = function ()
         {
             var inApp = window.cordova;
-            var data = task.createFileDownload($scope.filtered, $filter, (inApp ? ',' : ';'));
+            var data = task.createFileDownload($scope.filtered, $filter);
             
             $ionicPopup.alert({
                 title: 'Download File', 
@@ -164,6 +164,7 @@ app.controller('TaskController', [
                                 .then(function(success) {
                                     // var url = success.target.localURL;
                                     var targetPath = cordova.file.externalRootDirectory + data.name;
+                                    $cordovaToast.show("Download successfully done", 'long', 'top');
                                     $cordovaFileOpener2.open(
                                         targetPath,
                                         'text/comma-separated-values'
@@ -171,9 +172,17 @@ app.controller('TaskController', [
                                         console.log('event', event);
                                     }, function(err) {
                                         console.log('err', err);
+                                        $ionicPopup.alert({
+                                            title: 'Fail', 
+                                            template: '<p>Fail to open the file</p>'
+                                        });
                                     });
                                 }, function(error) {
                                     console.log('err-create', error);
+                                    $ionicPopup.alert({
+                                        title: 'Fail', 
+                                        template: '<p>Error to create the file</p>'
+                                    });
                                 });
                             } else{
                                 var link = document.createElement("a");
