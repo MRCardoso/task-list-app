@@ -164,18 +164,27 @@ app.controller('TaskController', [
                                 .then(function(success) {
                                     // var url = success.target.localURL;
                                     var targetPath = cordova.file.externalRootDirectory + data.name;
-                                    $cordovaToast.show("Download successfully done", 'long', 'top');
-                                    $cordovaFileOpener2.open(
-                                        targetPath,
-                                        'text/comma-separated-values'
-                                    ).then(function(event) {
-                                        console.log('event', event);
-                                    }, function(err) {
-                                        console.log('err', err);
-                                        $ionicPopup.alert({
-                                            title: 'Fail', 
-                                            template: '<p>Fail to open the file</p>'
-                                        });
+                                    $ionicPopup.alert({
+                                        title: 'Fail', 
+                                        template: "Download successfully done",
+                                        buttons: [{
+                                            text: '<b>ok</b>',
+                                            type: 'button-blue',
+                                            onTap: function(e){
+                                                $cordovaFileOpener2.open(
+                                                    targetPath,
+                                                    'text/comma-separated-values'
+                                                ).then(function(event) {
+                                                    console.log('event', event);
+                                                }, function(err) {
+                                                    console.log('err', err);
+                                                    $ionicPopup.alert({
+                                                        title: 'Fail', 
+                                                        template: '<p>Fail to open the file downloaded!</p>'
+                                                    });
+                                                });
+                                            }
+                                        }]
                                     });
                                 }, function(error) {
                                     console.log('err-create', error);

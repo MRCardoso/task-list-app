@@ -77,7 +77,8 @@ function Task()
                         for (var i = 0; i < csvArray.length; i++)
                         {
                             row = csvArray[i].split(';');
-                            
+                            console.log(row);
+
                             if( row.length != 7 )
                             {
                                 errors.push("Line "+(i+1)+": Invalid length of the file");
@@ -93,8 +94,8 @@ function Task()
                             }
 
                             var rowData = {
-                                "title": row[0],
-                                "description": row[1],
+                                "title": row[0].replace(/\r/ig, '\s'),
+                                "description": row[1].replace(/\r/ig, '\s'),
                                 "priority": row[2],
                                 "situation": row[3],
                                 "status": (row[4] === "true"),
@@ -120,7 +121,7 @@ function Task()
                     }
                 };
                 // Read in the image file as a data URL.
-                reader.readAsText(f);
+                reader.readAsText(f, 'ISO-8859-1');
             }
             else{
                 reject("The extension this file is not a valid csv file!");
@@ -143,8 +144,8 @@ function Task()
 
         angular.forEach(tasks, function(row,k){
             arrayData.push(charEncode+[
-                row["title"],
-                row["description"],
+                row["title"].replace(/\n/ig, '\s'),
+                row["description"].replace(/\n/ig, '\s'),
                 row["priority"],
                 row["situation"],
                 row["status"],
