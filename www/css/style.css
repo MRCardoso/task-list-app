@@ -218,8 +218,8 @@ label.item.valid-lr {
 .tabs-background-blue .tabs,
 .tabs-background-blue > .tabs {
     background-color: #3E7FAD;
-    background-image: linear-gradient(0deg, #0c60ee, #0c60ee 50%, transparent 50%);
-    border-color: #0c60ee; 
+    background-image: linear-gradient(0deg, #6E9FDD, #6E9FDD 50%, transparent 50%);
+    border-color: #6E9FDD; 
 }
 
 .popover {
@@ -266,4 +266,29 @@ label.item.valid-lr {
 }
 .center{
     text-align: center !important;
+}
+.loader{
+    padding: 0 !important;
+    margin: 0 !important;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-name: loading;
+}
+
+@keyframes loading {
+        from{
+        -ms-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to{
+        -ms-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    } 
 }

@@ -22,7 +22,7 @@ app.controller('HelpController', ["$scope", "$ionicModal", function ($scope, $io
         },
         {
             "id": 6,
-            "name": 'Calender',
+            "name": 'Calendar',
             "content": "Now have a home, with a calendar to filter task according the day selected."
         },
         {

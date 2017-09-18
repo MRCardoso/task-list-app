@@ -7,7 +7,6 @@ var app = angular.module('starter', ['ionic', 'ngCordova', 'chart.js']);
 
 app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate) 
 {
-    $rootScope.scrolling = false;
     $ionicPlatform.ready(function()
     {
         // $ionicLoading.show({template: 'Loading...',duration: 2000}).then(function(){});
@@ -51,7 +50,7 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
     $ionicConfigProvider.tabs.position("top");
     $ionicConfigProvider.tabs.style("standard");
     $ionicConfigProvider.backButton.text('');
-    
+
     $stateProvider
     .state('app', {
         url: '/app',

@@ -1,6 +1,6 @@
 app.controller('TaskController', [
-    '$scope', '$ionicPopup', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge', '$cordovaToast','$ionicPopover', '$ionicSlideBoxDelegate','$filter', '$cordovaFile','$cordovaFileOpener2',
-    function($scope,$ionicPopup, $ionicHistory,$state, $ionicPlatform, $cordovaBadge, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $filter, $cordovaFile, $cordovaFileOpener2)
+    '$scope', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge', '$cordovaToast','$ionicPopover', '$ionicSlideBoxDelegate','$filter', '$cordovaFile','$cordovaFileOpener2','messageBox','Log','$ionicLoading','$cordovaAppVersion',
+    function($scope, $ionicHistory,$state, $ionicPlatform, $cordovaBadge, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $filter, $cordovaFile, $cordovaFileOpener2, messageBox,Log, $ionicLoading, $cordovaAppVersion)
     {
         var task = new Task();
         var labels = app.appLabels;
@@ -8,57 +8,8 @@ app.controller('TaskController', [
         $scope.priorities = labels['priority'];
         $scope.situations = labels['situation'];
         $scope.statuses = labels['status'];
-        $scope.showRemove = false;    
-        $scope.delPop = null;
-
-        $ionicPopover.fromTemplateUrl('config-option.html', {
-            scope: $scope
-        }).then(function(popover) {
-            $scope.popover = popover;
-        });
-        
-        //Cleanup the popover when we're done with it!
-        $scope.$on('$destroy', function() {
-            $scope.popover.hide();
-            // $scope.popover.remove();
-        });
-
-        $scope.next = function() {
-            $ionicSlideBoxDelegate.next();
-        };
-        $scope.previous = function() {
-            $ionicSlideBoxDelegate.previous();
-        };
-
-        // Called each time the slide changes
-        $scope.slideChanged = function(index) {
-            $scope.slideIndex = index;
-        };
-
-        $scope.addBadge = function(value)
-        {
-            if( window.cordova )
-            {                
-                $ionicPlatform.ready(function()
-                {
-                    $cordovaBadge.hasPermission().then(function(yes) 
-                    {
-                        var action;
-                        if( value == 0 ) 
-                            action = $cordovaBadge.clear();
-                        else 
-                            action = $cordovaBadge.set(value);
-
-                        action.then(function() {console.log('added', value)}, function(err) {
-                            $ionicPopup.alert({title: 'error', template: 'error on manage badge!'});
-                        });
-                    }, function(no) {
-                        $ionicPopup.alert({title: 'error', template: 'Without permission'});
-                    });
-                });
-            }            
-        };
-        
+        $scope.showRemove = false;
+                
         /**
         | --------------------------------------------------------------------
         | Load all tasks in app
@@ -99,8 +50,9 @@ app.controller('TaskController', [
             if( window.cordova )
                 $cordovaToast.show("Task was save with successful!!", 'long', 'top');
 
-            $scope.addBadge(task.allOpened());
-            $ionicHistory.goBack();
+            refrashAndBadge(function(){
+                $ionicHistory.goBack();
+            });
         };
 
         /**
@@ -110,17 +62,31 @@ app.controller('TaskController', [
         */
         $scope.remove = function(index, event)
         {
-            createModalConfirm(
-                "Do you want remove this task?", 
-                function(e){
-                    $scope.delPop = null;
+            messageBox.confirm({
+                "title": "Delete task",
+                "message": "Do you want remove this task?",
+                "success": function(e){
                     if( window.cordova )
                         $cordovaToast.show("Task was deleted with successful!!", 'long', 'top');
                     task.remove(index);
                     refrashAndBadge();
                 }
-            );
+            },$scope);
         };
+
+        // $scope.clean = function()
+        // {
+        //     messageBox.confirm({
+        //         "title": "Delete task",
+        //         "message": "Do you want remove all task?",
+        //         "success": function(e){
+        //             if( window.cordova )
+        //                 $cordovaToast.show("All tasks are removed!", 'long', 'top');
+        //             task.clean();
+        //             refrashAndBadge();
+        //         }
+        //     },$scope);
+        // };
 
         $scope.validate = function(){
             if( this.formData == undefined )
@@ -130,10 +96,100 @@ app.controller('TaskController', [
                 || this.formData.start_date == '' || this.formData.start_date == null
             );
         };
+
+        /**
+        | --------------------------------------------------------------------
+        | Go to view page
+        | --------------------------------------------------------------------
+        */
         $scope.viewTask = function(id){
             $state.go('app.taskview', {taskId:id});
         };
 
+        /**
+        | --------------------------------------------------------------------
+        | Create a popover with options for task
+        | --------------------------------------------------------------------
+        */
+        $ionicPopover.fromTemplateUrl('config-option.html', {
+            scope: $scope
+        }).then(function(popover) {
+            $scope.popover = popover;
+        });
+        
+        //Cleanup the popover when we're done with it!
+        $scope.$on('$destroy', function() {
+            $scope.popover.hide();
+            // $scope.popover.remove();
+        });
+        
+        /**
+        | --------------------------------------------------------------------
+        | Call the next slider
+        | --------------------------------------------------------------------
+        */
+        $scope.next = function() {
+            $ionicSlideBoxDelegate.next();
+        };
+        /**
+        | --------------------------------------------------------------------
+        | Call the previous slider
+        | --------------------------------------------------------------------
+        */
+        $scope.previous = function() {
+            $ionicSlideBoxDelegate.previous();
+        };
+
+        /**
+        | --------------------------------------------------------------------
+        | Called each time the slide changes
+        | --------------------------------------------------------------------
+        */
+        $scope.slideChanged = function(index) {
+            $scope.slideIndex = index;
+        };
+
+        /**
+        | --------------------------------------------------------------------
+        | Add a badge in the ico of the app to notify the tasks open
+        | --------------------------------------------------------------------
+        */
+        $scope.addBadge = function(value, callback)
+        {
+            return new Promise(function(resolve, reject){
+                if( window.cordova )
+                {                
+                    $ionicPlatform.ready(function()
+                    {
+                        $cordovaBadge.hasPermission().then(function(yes) 
+                        {
+                            var action;
+                            if( value == 0 ) 
+                                action = $cordovaBadge.clear();
+                            else 
+                                action = $cordovaBadge.set(value);
+    
+                            action.then(function() {
+                                Log.info("added: "+value);
+                                resolve({});
+                            }, function(err) {
+                                Log.err('action.err: ', err);
+                                reject('error on manage badge!');
+                                messageBox.alert('error', 'error on manage badge!', $scope);
+                            });
+                        }, function(no) {
+                            Log.err("$cordovaBadge.hasPermission.err:", no);
+                            reject('Without permission');
+                            messageBox.alert('error', 'Without permission', $scope);
+                        });
+                    });
+                }
+                else{
+                    resolve({});
+                }
+            });
+        };
+        
         /**
         | --------------------------------------------------------------------
         | Create a file with all tasks exists in your app
@@ -141,68 +197,53 @@ app.controller('TaskController', [
         */
         $scope.download = function ()
         {
+            $scope.popover.hide();
             var inApp = window.cordova;
             var data = task.createFileDownload($scope.filtered, $filter);
-            
-            $ionicPopup.alert({
-                title: 'Download File', 
-                template: '<p>Download a file with all your tasks</p>',
-                buttons: [
-                    {
-                        text: '<b>Cancel</b>',
-                        type: 'button-light',
-                        onTap: function(e){
-                        }
-                    },
-                    {
-                        text: '<b>OK</b>',
-                        type: 'button-blue-inverse', 
-                        onTap: function(e){
-                            if( inApp ){
-                                console.log(cordova.file);
-                                $cordovaFile.writeFile(cordova.file.externalRootDirectory, data.name, data.str, true)
-                                .then(function(success) {
-                                    // var url = success.target.localURL;
-                                    var targetPath = cordova.file.externalRootDirectory + data.name;
-                                    $ionicPopup.alert({
-                                        title: 'Fail', 
-                                        template: "Download successfully done",
-                                        buttons: [{
-                                            text: '<b>ok</b>',
-                                            type: 'button-blue',
-                                            onTap: function(e){
-                                                $cordovaFileOpener2.open(
-                                                    targetPath,
-                                                    'text/comma-separated-values'
-                                                ).then(function(event) {
-                                                    console.log('event', event);
-                                                }, function(err) {
-                                                    console.log('err', err);
-                                                    $ionicPopup.alert({
-                                                        title: 'Fail', 
-                                                        template: '<p>Fail to open the file downloaded!</p>'
-                                                    });
-                                                });
-                                            }
-                                        }]
+
+            messageBox.confirm({
+                "title": "Download Task",
+                "message": "Download a file with all your tasks?",
+                "success": function(e){
+                    if( inApp ){
+                        Log.info('cordova.file:', cordova.file);
+                        $cordovaFile
+                        .writeFile(cordova.file.externalRootDirectory, data.name, data.str, true)
+                        .then(function(success) {
+                            Log.success("$cordovaFile.writeFile.success:", success);
+                            var targetPath = success.target.localURL;
+                            // var targetPath = cordova.file.externalRootDirectory + data.name;
+                            messageBox.confirm({
+                                "title": "Success",
+                                "message": "Download successfully done",
+                                "btnCancel": "Close",
+                                "btnOk": "Open",
+                                "classCancel": "button-blue-inverse",
+                                "classOk": "button-balanced",
+                                "success": function(e){
+                                    $cordovaFileOpener2.open(
+                                        targetPath,
+                                        'text/comma-separated-values'
+                                    ).then(function(event) {
+                                        Log.success("$cordovaFileOpener2.open.success:", event);
+                                    }, function(err) {
+                                        Log.err("$cordovaFileOpener2.open.err:", err);
+                                        messageBox.alert('Fail', 'Not was possible to open the downloaded file!', $scope);
                                     });
-                                }, function(error) {
-                                    console.log('err-create', error);
-                                    $ionicPopup.alert({
-                                        title: 'Fail', 
-                                        template: '<p>Error to create the file</p>'
-                                    });
-                                });
-                            } else{
-                                var link = document.createElement("a");
-                                link.download = data.name;
-                                link.href = URL.createObjectURL(data.file);
-                                link.click();
-                            }
-                        }
+                                }
+                            });
+                        }, function(error) {
+                            Log.err("$cordovaFile.writeFile.err:", error);
+                            messageBox.alert('Fail', 'Do not was possible do the download!', $scope);
+                        });
+                    } else{
+                        var link = document.createElement("a");
+                        link.download = data.name;
+                        link.href = URL.createObjectURL(data.file);
+                        link.click();
                     }
-                ]
-            });
+                }
+            },$scope);
         };
 
         /**
@@ -213,52 +254,51 @@ app.controller('TaskController', [
         $scope.upload = function()
         {
             $scope.popover.hide();
-            createModalConfirm("Do you wish import a file with your tasks?", function(e)
-            {
-                var successFile = function(reason){
-                    if( window.cordova )
-                        $cordovaToast.show(reason, 'long', 'top');
-                    refrashAndBadge();
-                },
-                errorFile = function(reason){
-                    console.log('error', reason);
-                    $ionicPopup.alert({
-                        title: 'Error', 
-                        template: reason,
-                        buttons:[{
+            messageBox.confirm({
+                "title": "Import Tasks",
+                "message": "Do you wish import a file with your tasks?",
+                "success": function(e){
+                    var successFile = function(reason){
+                        if( window.cordova )
+                            $cordovaToast.show(reason, 'long', 'top');
+                        refrashAndBadge();
+                    },
+                    errorFile = function(reason){
+                        Log.err("$cordovaFile.writeFile.err: "+reason);
+                        messageBox.alert('Validation Error', reason, $scope, [{
                             text: '<b>Ok</b>',
                             type: 'button-blue-inverse',
                             onTap: function(e){
                                 refrashAndBadge();
                             }
-                        }]
-                    });
-                };
-                if( 'fileChooser' in window)
-                {
-                    window.fileChooser.open(function(uri) {
-                        console.log('url:', uri);
-                        window.FilePath.resolveNativePath(uri, function(fileName){
-                            console.log('fileName', fileName);
-                            window.resolveLocalFileSystemURL(fileName, function (fileEntry)
-                            {
-                                console.log('fileEntry', fileEntry);
-                                fileEntry.file(function (file) {
-                                    task.saveByExport(file).then(successFile, errorFile);
+                        }]);
+                    };
+                    if( 'fileChooser' in window)
+                    {
+                        window.fileChooser.open(function(uri) {
+                            Log.success("window.fileChooser.open.success: "+uri);
+                            window.FilePath.resolveNativePath(uri, function(fileName){
+                                Log.success("window.FilePath.resolveNativePath.success: "+fileName);
+                                window.resolveLocalFileSystemURL(fileName, function (fileEntry)
+                                {
+                                    Log.success("window.resolveLocalFileSystemURL.success: ", fileEntry);
+                                    fileEntry.file(function (file) {                                        
+                                        task.saveByExport(file).then(successFile, errorFile);
+                                    });
                                 });
                             });
                         });
-                    });
-                }
-                else{
-                    var element = document.getElementById('upload-file-item');
-                    element.value = "";
-                    element.click();
-                    
-                    element.onchange = function()
-                    {
-                        task.saveByExport(this.files[0]).then(successFile, errorFile);
-                    };
+                    }
+                    else{
+                        var element = document.getElementById('upload-file-item');
+                        element.value = "";
+                        element.click();
+                        
+                        element.onchange = function()
+                        {
+                            task.saveByExport(this.files[0]).then(successFile, errorFile);
+                        };
+                    }
                 }
             });
         };
@@ -282,42 +322,27 @@ app.controller('TaskController', [
             $scope.charts = task.createChartData(tasks, labels);
         };
 
-        function refrashAndBadge()
+        function refrashAndBadge(action)
         {
+            $ionicLoading.show({
+                template: '<p>Loading...</p><ion-spinner></ion-spinner>',
+                content: 'Loading',
+                animation: 'fade-in'
+            });
             var opened = task.allOpened();
-            console.log('task-open', opened);
-            $scope.addBadge(opened);
-            $state.reload();
-        }
-
-        function createModalConfirm(message, success, fail)
-        {
-            if( $scope.delPop == null)
-            {
-                $scope.delPop = $ionicPopup.confirm({
-                    template: message,
-                    title: 'Confirmation',
-                    scope: $scope,
-                    buttons: [
-                        {
-                            text: '<b>Cancel</b>',
-                            type: 'button-light',
-                            onTap: function(e){ 
-                                $scope.delPop = null;
-                                if( fail != undefined )
-                                    fail();
-                            }
-                        },
-                        {
-                            text: '<b>OK</b>',
-                            type: 'button-blue-inverse', 
-                            onTap: function(e){
-                                $scope.delPop = null;
-                                success(e);
-                            }
-                        }
-                    ]
+            Log.info("task-open: " + opened);
+            $scope.addBadge(opened)
+            .then(function(){
+                $ionicLoading.hide().then(function(){
+                    if( action != undefined)
+                        action();
+                    else
+                        $state.reload();
                 });
-            }
+            }, function(message){
+                $ionicLoading.hide().then(function(){
+                    messageBox.alert('error', message, $scope);
+                });                
+            });            
         }
 }]);

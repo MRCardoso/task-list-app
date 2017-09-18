@@ -26,6 +26,12 @@ function Task()
         created: new Date()
     };
 
+    this.clean = function()
+    {
+        this.items = [];
+        store(this.items);
+    }
+
     this.remove = function(index)
     {
         if( this.items[index] != 'undefined')
@@ -77,12 +83,13 @@ function Task()
                         for (var i = 0; i < csvArray.length; i++)
                         {
                             row = csvArray[i].split(';');
-                            console.log(row);
-
+                            
+                            if( row[7] != 'undefined')
+                                row.splice(7, 1);
+                            
                             if( row.length != 7 )
                             {
-                                errors.push("Line "+(i+1)+": Invalid length of the file");
-                                continue;
+                                throw("Invalid length of the file");
                             }
                             if( row[0].trim() == "" ){
                                 errors.push("Line "+(i+1)+": The field 'title' is required");
@@ -92,7 +99,7 @@ function Task()
                                 errors.push("Line "+(i+1)+": The field 'start date' is required");
                                 continue;
                             }
-
+                            
                             var rowData = {
                                 "title": row[0].replace(/\r/ig, '\s'),
                                 "description": row[1].replace(/\r/ig, '\s'),

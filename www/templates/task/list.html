@@ -1,17 +1,15 @@
 <ion-view cache-view="false">
     
-    <ion-nav-title>
+    <ion-nav-title aria-label="center">
         <i class="ion-android-list"></i>
         Task
     </ion-nav-title>
 
     <ion-nav-buttons side="right">
-        <div>
-            <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"> 
-            </button>            
-        </div>
+        <!-- <button class="button button-small button-blue icon ion-trash-a" ng-click="clean()"></button> -->
+        <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></button>
     </ion-nav-buttons> 
-    <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">
+    <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">        
         <div ng-init="find()">
             <div class="bar bar-header item-input-inset">
                 <label class="item-input-wrapper">
@@ -26,7 +24,7 @@
                     <div class="row" ng-click="viewTask(item.id)">
                         <div class="col col-90">
                             <ion-delete-button class="ion-minus-circled" ng-click="remove(item.id,$event)"></ion-delete-button>
-                            <ion-option-button class="ion-edit button-blue" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
+                            <ion-option-button class="ion-edit" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
                             <h2 ng-bind="item.title"></h2>
                         </div>
                         <div class="col col-10">
@@ -63,7 +61,8 @@
                 </ion-popover-view>
             </script>
         </div>
-    </ion-content>
+    </ion-content>    
+
     <ion-footer-bar class="bar-light">
         <label class="toggle toggle-assertive">
             <input type="checkbox" ng-model="showRemove">
