@@ -27,7 +27,7 @@ app.controller('HelpController', ["$scope", "$ionicModal", function ($scope, $io
         },
         {
             "id": 7,
-            "name": "Manage Options <i class='button-icon icon ion-android-more-vertical'></i>",
+            "name": "<i class='button-icon icon ion-android-more-vertical'></i> Task Options",
             "content": "",
             "chidren": [
                 {"title": "New", "content": "Button to add a new task, with 'title' and 'start_date' fields required"},
