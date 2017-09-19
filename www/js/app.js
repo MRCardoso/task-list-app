@@ -24,6 +24,7 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
         }
         if(window.StatusBar) {
             StatusBar.styleDefault();
+            StatusBar.backgroundColorByHexString("#4E8FBD");
         }
     });
     
