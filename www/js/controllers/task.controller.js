@@ -74,19 +74,19 @@ app.controller('TaskController', [
             },$scope);
         };
 
-        // $scope.clean = function()
-        // {
-        //     messageBox.confirm({
-        //         "title": "Delete task",
-        //         "message": "Do you want remove all task?",
-        //         "success": function(e){
-        //             if( window.cordova )
-        //                 $cordovaToast.show("All tasks are removed!", 'long', 'top');
-        //             task.clean();
-        //             refrashAndBadge();
-        //         }
-        //     },$scope);
-        // };
+        $scope.clean = function()
+        {
+            messageBox.confirm({
+                "title": "Delete All tasks",
+                "message": "Do you want remove all tasks?",
+                "success": function(e){
+                    if( window.cordova )
+                        $cordovaToast.show("All tasks are removed!", 'long', 'top');
+                    task.clean();
+                    refrashAndBadge();
+                }
+            },$scope);
+        };
 
         $scope.validate = function(){
             if( this.formData == undefined )
