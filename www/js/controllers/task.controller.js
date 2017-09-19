@@ -78,7 +78,7 @@ app.controller('TaskController', [
         {
             messageBox.confirm({
                 "title": "Delete All tasks",
-                "message": "Do you want remove all tasks?",
+                "message": "Do you want remove all tasks?<br>is recommended that you exporting your tasks first",
                 "success": function(e){
                     if( window.cordova )
                         $cordovaToast.show("All tasks are removed!", 'long', 'top');
