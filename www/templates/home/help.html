@@ -10,7 +10,7 @@
         </h1>
     </ion-nav-title>
     
-    <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">            
+    <ion-content>
         <div class="list">
             <div ng-repeat="(tp, topic) in topics | orderBy: '-id'">
                 <div class="item item-{{$index%2==0? 'stable':'light'}}" ng-click="toggleGroup(tp, 'parent')" ng-class="{active: isGroupShown(tp, 'parent')}">
