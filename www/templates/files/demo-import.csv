@@ -1,4 +1,16 @@
-Título;Descrição;Prioridade;Situação;Status;Inicio;Termino
+Title;Description;Priority;Situation;Status;Start;End
 teste uni 1;unidunite;1;1;true;12/09/2017;14/09/2017
 teste uni 2;salame;2;3;false;12/09/2017;18/09/2017
 teste uni 3;mingue;1;1;true;12/09/2017;18/09/2017
+;;;;;;
+;;;;;;
+;;;;;;
+See the list od values for situation, priority and status:;;;;;;
+Situation;;Priority;;Status;;
+1 - Open;;1 - Low;;0 - Active;;
+2 - Concluded;;2 - Average;;1 - Inactive;;
+3 - Canceled;;3 - High;;;;
+4 - In process;;;;;;
+5 - Expired;;;;;;
+6 - On hold;;;;;;
+;;;;;;

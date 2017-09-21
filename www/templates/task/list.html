@@ -6,7 +6,6 @@
     </ion-nav-title>
 
     <ion-nav-buttons side="right">
-        <button class="button button-small button-blue icon ion-android-delete" ng-click="clean()"></button>
         <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></button>
     </ion-nav-buttons> 
     <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">
@@ -20,15 +19,22 @@
             </div>
             
             <ion-list show-delete="showRemove">
-                <ion-item ng-repeat="item in $root.filtered = (tasks | filter:filter)">
-                    <div class="row" ng-click="viewTask(item.id)">
-                        <div class="col col-90">
+                <ion-item ng-repeat="item in $root.filtered = (tasks | filter:filter) | orderBy: '-id'">
+                    <div class="row label-{{$index%2==0?'stable':'light'}}" ng-click="viewTask(item.id)">
+                        <div class="col col-100">
                             <ion-delete-button class="ion-minus-circled" ng-click="remove(item.id,$event)"></ion-delete-button>
-                            <ion-option-button class="ion-edit" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
-                            <h2 ng-bind="item.title"></h2>
-                        </div>
-                        <div class="col col-10">
-                            <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
+                            <ion-option-button class="button-blue ion-edit" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
+                            <div class="left">
+                                <h2 ng-bind="item.title"></h2>
+                                <small class="small-text">
+                                    {{item.start_date | date:'dd/MM/yyyy'}}
+                                    -
+                                    {{item.end_date | date:'dd/MM/yyyy'}}
+                                </small>
+                            </div>
+                            <div class="right">
+                                <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
+                            </div>
                         </div>
                     </div>
                 </ion-item>
@@ -64,12 +70,17 @@
     </ion-content>    
 
     <ion-footer-bar class="bar-light">
-        <label class="toggle toggle-assertive">
-            <input type="checkbox" ng-model="showRemove">
-            <div class="track">
-                <div class="handle"></div>
+        <div class="my-row" ng-show="$root.filtered.length>0">
+            <label class="toggle toggle-assertive">
+                <input type="checkbox" ng-model="showRemove">
+                <div class="track">
+                    <div class="handle"></div>
+                </div>
+            </label>
+            <div class="right">
+                <button class="label-assertive-inverse button button-small icon ion-android-delete" ng-click="clean()"></button>
             </div>
-        </label>
+        </div>
     </ion-footer-bar>
 
 </ion-view>

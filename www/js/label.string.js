@@ -65,7 +65,7 @@ app.appLabels = {
             "id": "6",
             "name": "On hold",
             "class":"stable",
-            "color": "#b2b2b2"
+            "color": "#11c1f3"
         }
     },
     "status":

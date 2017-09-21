@@ -9,28 +9,31 @@
             <i class="ion-ionic"></i>
         </h1>
     </ion-nav-title>
-    
     <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">
-        <div class="list">
-            <div ng-repeat="(tp, topic) in topics | orderBy: '-id'">
-                <div class="item item-{{$index%2==0? 'stable':'light'}}" ng-click="toggleGroup(tp, 'parent')" ng-class="{active: isGroupShown(tp, 'parent')}">
-                    <i class="icon" ng-class="isGroupShown(tp, 'parent') ? 'ion-chevron-down' : 'ion-chevron-right'"></i>
-                    <span ng-bind-html="topic.name"></span>
+        <div class="card">
+            <div class="item item-divider">
+                <h2>Tutorial</h2>
+                <p>Examples of usage for this app</p>                
+            </div>
+            <!-- <a class="item item-list-detail">
+                <ion-scroll direction="x">
+                    <img ng-repeat="topic in topics" ng-src="{{topic.src}}" ng-click="showGallery($index)" class="image-list-thumb"/>
+                </ion-scroll>
+            </a> -->
+            <div class="item item-body">
+                <div class="center">
+                    <button class="button button-blue" ng-click="showGallery()">See a simple Tutorial</button>                
                 </div>
-                <div class="item-parent item-accordion" ng-show="isGroupShown(tp, 'parent')">
-                    <p ng-bind-html="topic.content"></p>
-                    <div ng-if="topic.chidren">
-                        <div ng-repeat="(ci, child) in topic.chidren">
-                            <div class="item item-{{$index%2==0? 'stable':'light'}}" ng-click="toggleGroup(ci, 'child')" ng-class="{active: isGroupShown(ci, 'child')}">
-                                <i class="icon" ng-class="isGroupShown(ci, 'child') ? 'ion-chevron-down' : 'ion-chevron-right'"></i>
-                                <span ng-bind-html="child.title"></span>
-                            </div>
-                            <div class="item-child item-accordion" ng-show="isGroupShown(ci, 'child')">
-                                <div ng-bind-html="child.content"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p>
+                    Drag with both fingers to zoom in image,
+                    to move the image with zoom, use both fingers too.
+                </p>
+                <p>
+                    Drag to left or right to prev and next image.
+                </p>
+                <p>
+                    Drag to down with the finger to close modal.
+                </p>
             </div>
         </div>
     </ion-content>

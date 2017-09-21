@@ -325,9 +325,8 @@ app.controller('TaskController', [
         function refrashAndBadge(action)
         {
             $ionicLoading.show({
-                template: '<p>Loading...</p><ion-spinner></ion-spinner>',
-                content: 'Loading',
-                animation: 'fade-in'
+                template: '<p>Loading...</p><ion-spinner icon="dots"></ion-spinner>',
+                showBackdrop: true,
             });
             var opened = task.allOpened();
             Log.info("task-open: " + opened);

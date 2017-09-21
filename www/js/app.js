@@ -31,7 +31,7 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
 	$rootScope.scrollEvent = function() {
         var scrollamount = $ionicScrollDelegate.$getByHandle('scrollHandle').getScrollPosition().top;
         var header = document.querySelectorAll('.bar-header, ion-content');
-		if (scrollamount > 0) 
+		if (scrollamount > 50) 
         { 
             // Would hide nav-bar immediately when scrolled and show it only when all the way at top. You can fiddle with it to find the best solution for you
             $ionicNavBarDelegate.showBar(false);

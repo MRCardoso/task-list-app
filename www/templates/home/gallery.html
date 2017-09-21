@@ -1,0 +1,17 @@
+<div class="modal image-modal transparent" on-swipe-down="closeModal()">
+    <ion-slide-box on-slide-changed="slideChanged(index)" active-slide="activeSlide" show-pager="false">
+        <ion-slide ng-repeat="topic in topics">
+            <ion-scroll
+                zooming="true"
+                direction="xy"
+                delegate-handle="zoom-pane"
+                min-zoom="1"
+                max-zoom="15"
+                overflow-scroll="false">
+                    <div class="image" style="background-image: url( {{topic.src}} )">
+                        <p ng-bind="topic.text"></p>
+                    </div>
+            </ion-scroll>
+        </ion-slide>
+    </ion-slide-box>
+</div>

@@ -1,104 +1,34 @@
-app.controller('HelpController', ["$scope", "$ionicModal", function ($scope, $ionicModal) {
+app.controller('HelpController', ["$scope", "$ionicModal", "$ionicSlideBoxDelegate", function ($scope, $ionicModal, $ionicSlideBoxDelegate)
+{
     $scope.topics = [
-        {
-            "id": 2,
-            "name": "Update/view task",
-            "content": "In the list of task, at the side each one record, have the buttons 'view' and 'edit', but they are hidden, to show they, drag the wished record  for left."
-        },
-        {
-            "id": 3,
-            "name": "Delete task",
-            "content": "In the list of task, at the side each one record, have the button 'delete',but he is hide, to show he, active the button in the bottom of the page."
-        },
-        {
-            "id": 4,
-            "name": "Search task",
-            "content": "In the list of task, have the search input, that you can search by whatever word contained into the title or description of the task."
-        },
-        {
-            "id": 5,
-            "name": 'Badge',
-            "content": "Now have badge in the icon of the app, that shows the total of tasks 'opened' on the moment."
-        },
-        {
-            "id": 6,
-            "name": 'Calendar',
-            "content": "Now have a home, with a calendar to filter task according the day selected."
-        },
-        {
-            "id": 7,
-            "name": "<i class='button-icon icon ion-android-more-vertical'></i> Task Options",
-            "content": "",
-            "chidren": [
-                {"title": "New", "content": "Button to add a new task, with 'title' and 'start_date' fields required"},
-                {"title": "Graph", "content": "modal with the graph with list of 'status', 'stuation' and 'prority'"},
-                {"title": "Export", "content": "Download the tasks(with filter too) in your app(.csv)"},
-                {
-                    "title": "Import", 
-                    "content": [
-                        "<h4>Upload and created tasks by a file .csv, see a file of example: </h4>",
-                        "<table class='table-item'>",
-                            "<tr>",
-                                "<th>Title</th>",
-                                "<th>Description</th>",
-                                "<th>Priority</th>",
-                                "<th>Situation</th>",
-                                "<th>Status</th>",
-                                "<th>Start</th>",
-                                "<th>End</th>",
-                            "</tr>",
-                            "<tr>",
-                                "<td colspan=\"7\"></td>",
-                            "</tr>",
-                        "</table>",
-                        "<h4>See the list od values for situation, priority and status:</h4>",
-                        "<table class='table-item'>",
-                            "<tr>",
-                                "<th>Situation</th>",
-                                "<th>priority</th>",
-                                "<th>Status</th>",
-                            "</tr>",
-                            "<tr>",
-                                "<td>1 - Open</td>",
-                                "<td>1 - Low</td>",
-                                "<td>1 - Active</td>",
-                            "</tr>",
-                            "<tr>",
-                                "<td>2 - Concluded</td>",
-                                "<td>2 - Average</td>",
-                                "<td>0 - Inactive</td>",
-                            "</tr>",
-                            "<tr>",
-                                "<td>3 - Canceled</td>",
-                                "<td>3 - High</td>",
-                                "<td></td>",
-                            "</tr>",
-                            "<tr>",
-                                "<td>4 - In process</td>",
-                                "<td></td>",
-                                "<td></td>",
-                            "</tr>",
-                            "<tr>",
-                                "<td>5 - Expired</td>",
-                                "<td></td>",
-                                "<td></td>",
-                            "</tr>",
-                        "</table>",
-                    ].join(' ')
-                },
-            ]
-        }
+        {src: 'img/help/home.jpg', text: "Home, a calendar to filter all tasks in the selected day."},
+        {src: 'img/help/task-option.jpg', text: "Menu task, create, update, view, remove, import, export, grap"},
+        {src: 'img/help/task-filter.jpg', text: "Filter a specific task"},
+        {src: 'img/help/task-create.jpg', text: "Create a new task, with title and start date required"},
+        {src: 'img/help/task-view.jpg', text: "Choose a task and click on it to go the view page"},
+        {src: 'img/help/task-edit.jpg', text: "Choose a task and drag to right to show edit button"},
+        {src: 'img/help/task-grap.jpg', text: "A graph of 'status', 'stuation' and 'prority' for all tasks"},
+        {src: 'img/help/task-delete.jpg', text: "Click at the toggle in the bottom on left, select the task, confirm and delete"},
+        {src: 'img/help/task-delete-all.jpg', text: "Click in the trash icon, in the bottom on right, confirm and delete all tasks"},
+        {src: 'img/help/task-download.jpg', text: "Download the tasks(with filter too) in your app(.csv)"},
+        {src: 'img/help/task-download-done.jpg', text: "After download tasks is possible open the file, if you have the 'Excel' app"},
+        {src: 'img/help/task-import.jpg', text: "Upload to create tasks by a file .csv"},
+        {src: 'img/help/task-file.jpg', text: "See a example of the csv file"},
     ];
 
-    $scope.shownGroup = {};
-    
-    $scope.toggleGroup = function(index, level) {
-        if ($scope.isGroupShown(index, level))
-            $scope.shownGroup[level] = null;
-        else
-            $scope.shownGroup[level] = index;
+    $scope.showGallery = function(index)
+    {
+        $scope.activeSlide = 0;
+        $ionicModal.fromTemplateUrl('templates/home/gallery.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+            $scope.modal.show();
+        });
     };
-    $scope.isGroupShown = function(index, level) {
-        return $scope.shownGroup[level] === index;
+       
+    $scope.closeModal = function() {
+        $scope.modal.hide();
+        $scope.modal.remove();
     };
 }])
