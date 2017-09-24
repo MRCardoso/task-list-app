@@ -2,11 +2,12 @@ app.controller('HelpController', ["$scope", "$ionicModal", "$ionicSlideBoxDelega
 {
     $scope.topics = [
         {src: 'img/help/home.jpg', text: "Home, a calendar to filter all tasks in the selected day."},
-        {src: 'img/help/task-option.jpg', text: "Menu task, create, update, view, remove, import, export, grap"},
-        {src: 'img/help/task-filter.jpg', text: "Filter a specific task"},
+        {src: 'img/help/task.jpg', text: "Menu task, management of tasks, create edit, delete, export, import, view graphic with situations, priority and status, is possible filter a specific task"},
+        {src: 'img/help/task-option.jpg', text: "In the icon on top at right the are actions, create, import, export a graphic"},
         {src: 'img/help/task-create.jpg', text: "Create a new task, with title and start date required"},
-        {src: 'img/help/task-view.jpg', text: "Choose a task and click on it to go the view page"},
         {src: 'img/help/task-edit.jpg', text: "Choose a task and drag to right to show edit button"},
+        {src: 'img/help/task-update.jpg', text: "Update the data of a task, in eye icon is possible go to the view of the this task"},
+        {src: 'img/help/task-view.jpg', text: "In menu taks, choose a task and click on it to go the view page, in pencil icon is possible go to the edit of the this task"},
         {src: 'img/help/task-grap.jpg', text: "A graph of 'status', 'stuation' and 'prority' for all tasks"},
         {src: 'img/help/task-delete.jpg', text: "Click at the toggle in the bottom on left, select the task, confirm and delete"},
         {src: 'img/help/task-delete-all.jpg', text: "Click in the trash icon, in the bottom on right, confirm and delete all tasks"},
