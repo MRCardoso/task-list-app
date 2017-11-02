@@ -1,0 +1,76 @@
+<ion-view cache-view="false">
+    <ion-nav-title>
+        Tester Media
+    </ion-nav-title>
+    <ion-content on-scroll="scrollEvent()" delegate-handle="scrollHandle">
+        <button class="button button-balanced" ng-click="captureAudio()">Audio <i class="ion-mic-a"></i></button>
+        <button class="button button-energized" ng-click="captureImage()">Image <i class="ion-camera"></i></button>
+        <button class="button button-positive" ng-click="captureVideo()">Video <i class="ion-videocamera"></i></button>
+
+        <div class="list">
+            <div class="item item-divider">
+                Audio
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider" ng-repeat="audio in listAudio">
+                    {{audio}}
+                    <audio controls src="{{audio.fullPath}}"></audio>
+                </div>
+            </div>
+            <div class="item item-divider">
+                Image
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider" ng-repeat="image in listImage">
+                    {{image}}
+                    <img ng-src="{{image.fullPath}}" width="80">
+                </div>
+            </div>
+            <div class="item item-divider">
+                Video
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider" ng-repeat="video in litVideo">
+                    {{video}}
+                    <video controls ng-src="{{video.fullPath}}" type="video/mp4" width="300"></video>
+                </div>
+            </div>
+
+            <!-- <div class="item item-divider">
+                SMS
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider">
+                    <input id="numberTxt" placeholder="Enter mobile number" ng-model="phoneNumber" type="tel" />
+                    <textarea id="messageTxt" placeholder="Enter message" ng-model="message"></textarea>
+                    <button class="button button-positive" ng-click="sendSMS()">SMS <i class="ion-videocamera"></i></button>
+                </div>
+            </div> -->
+            <div class="item item-divider">
+                notify
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider">
+                    <button class="button button-positive" ng-click="notify()">send</button>
+                </div>
+            </div>
+            <div class="item item-divider">
+                Start DB Sqlite
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider">
+                    <button class="button button-positive" ng-click="openDB()">open</button>
+                </div>
+            </div>
+            
+            <div class="item item-divider">
+                touch
+            </div>
+            <div class="item item-text-wrap">
+                <div class="item item-divider">
+                    <button class="button button-positive" ng-click="touch()">touchID</button>
+                </div>
+            </div>            
+        </div>
+    </ion-content>
+</ion-view>

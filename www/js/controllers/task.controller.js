@@ -1,6 +1,6 @@
 app.controller('TaskController', [
-    '$scope', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge', '$cordovaToast','$ionicPopover', '$ionicSlideBoxDelegate','$filter', '$cordovaFile','$cordovaFileOpener2','messageBox','Log','$ionicLoading','$cordovaAppVersion',
-    function($scope, $ionicHistory,$state, $ionicPlatform, $cordovaBadge, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $filter, $cordovaFile, $cordovaFileOpener2, messageBox,Log, $ionicLoading, $cordovaAppVersion)
+    '$scope', '$ionicHistory','$state','$ionicPlatform','$cordovaBadge', '$cordovaToast','$ionicPopover', '$ionicSlideBoxDelegate','$filter', '$cordovaFile','$cordovaFileOpener2','messageBox','Log','$ionicLoading',
+    function($scope, $ionicHistory,$state, $ionicPlatform, $cordovaBadge, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $filter, $cordovaFile, $cordovaFileOpener2, messageBox,Log, $ionicLoading)
     {
         var task = new Task();
         var labels = app.appLabels;
@@ -62,6 +62,7 @@ app.controller('TaskController', [
         */
         $scope.remove = function(index, event)
         {
+            Log.info("call Remove");
             messageBox.confirm({
                 "title": "Delete task",
                 "message": "Do you want remove this task?",
@@ -76,6 +77,7 @@ app.controller('TaskController', [
 
         $scope.clean = function()
         {
+            Log.info("call clean");
             messageBox.confirm({
                 "title": "Delete All tasks",
                 "message": "Do you want remove all tasks?<br>is recommended that you exporting your tasks first",

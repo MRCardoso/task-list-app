@@ -122,7 +122,16 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
                 controller: 'TaskController'
             }
         }
-    });
+    })
+    .state('app.media', {
+        url: '/media',
+        views: {
+            'app-media': {
+                templateUrl: 'templates/media/index.html',
+                controller: 'MediaController'
+            }
+        }
+    });    
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/home');
 });

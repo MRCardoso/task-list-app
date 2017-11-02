@@ -17,6 +17,7 @@ app.service('messageBox', ["$rootScope", "$ionicPopup", function($rootScope, $io
 
 	this.confirm = function(config, $scope)
 	{
+		console.log( 'is null', boxConfirm == null);
 		if( boxConfirm == null)
 		{
 			boxConfirm = $ionicPopup.confirm({
