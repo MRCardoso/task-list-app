@@ -1,16 +1,21 @@
-app.controller('HomeController', ["$scope", "$rootScope", "$filter", "$ionicLoading", "$http", function ($scope, $rootScope, $filter, $ionicLoading,$http)
+app.controller('HomeController', ["$scope", "$filter", "messageBox", "Loading", "Task", function ($scope, $filter, messageBox, Loading,Task)
 {
     $scope.date = new Date();
     $scope.showCalendar = true;
 
     $scope.findOpen = function()
     {
-        $scope.openTasks = new Task().getTasks().filter(function(row,i)
-        {
-            var current = $filter('date')($scope.date, 'yyyy-MM-dd');
-            var startDate = $filter('date')(new Date(row.start_date), 'yyyy-MM-dd');   
-            // var endDate = row.end_date != null ? $filter('date')(new Date(row.end_date), 'yyyy-MM-dd') : null;
-            return startDate == current;// && ( current <= endDate || endDate == null);
+        Loading.show();
+        var start = new Date($filter('date')($scope.date, 'yyyy-MM-dd 00:00:00')).getTime();
+        var end = new Date($filter('date')($scope.date, 'yyyy-MM-dd 23:59:59')).getTime();
+
+        Task.find(['*'], {start_date: {operator: 'BETWEEN', value: [start,end]}})
+        .then(function(tasks){
+            $scope.openTasks = tasks;
+        }, function(e){
+            messageBox.alert('error', 'Houve um erro ao carregar tarefas', $scope);
+        }).finally(function(){
+            Loading.hide();
         });
     };
     

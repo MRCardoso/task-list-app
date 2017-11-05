@@ -1,39 +1,50 @@
 <ion-view ng-init="findOne()" cache-view="false">
     <ion-nav-title>
-        <h3 class="title" ng-bind="formData.title"></h3>
+        <h3 class="title" ng-bind="task.title"></h3>
     </ion-nav-title>
     <ion-nav-buttons side="right">
-        <a href="#/app/taskEdit/{{formData.id}}" class="button button-blue" title="Edit">
+        <a href="#/app/taskEdit/{{task.id}}" class="button button-blue" title="Edit">
             <i class="ion-edit"></i>
         </a>
     </ion-nav-buttons>
     <ion-content>
-        <div class="item item-input">
-            <div class="item-text-wrap">{{formData.description || 'no description'}}</div>
-        </div>
-        <div class="item item-input">
-            <div class="input-label">Priority</div>
-            <render-label type="'priority'" labels="priorities" index="formData.priority"></render-label>
-        </div>
-        <div class="item item-input">
-            <div class="input-label">Situation</div>
-            <render-label type="'situation'" labels="situations" index="formData.situation"></render-label>
-        </div>
-        <div class="item item-input">
-            <div class="input-label">Status</div>
-            <render-label type="'status'" labels="statuses" index="formData.status"></render-label>
-        </div>
-        <div class="item item-input">
-            <div class="input-label">Range Date</div>
-            {{formData.start_date | date:'dd/MM/yyyy'}}            
-            <span ng-if="formData.end_date != null">
-                -
-                {{formData.end_date | date:'dd/MM/yyyy'}}
-            </span>
-        </div>
-        <div class="item item-input">
-            <div class="input-label">Created</div>
-            {{formData.created | date:'dd/MM/yyyy HH:mm:ss'}}
+        <div ng-switch="task.id">
+            <div ng-switch-when="undefined">
+                <img src="/img/hommer-404.jpg" class="image-modal" alt="404">
+                <a nf-href="#/app/task" class="button-blue button button-full" title="Task Manage">
+                    <i class="ion-ios-arrow-back"></i>
+                    <strong>Sorry, we cannot be found the task requested</strong>
+                </a>
+            </div>
+            <div ng-switch-default>
+                <div class="item item-input">
+                    <div class="item-text-wrap">{{task.description || 'no description'}}</div>
+                </div>
+                <div class="item item-input">
+                    <div class="input-label">Priority</div>
+                    <render-label type="'priority'" labels="priorities" index="task.priority"></render-label>
+                </div>
+                <div class="item item-input">
+                    <div class="input-label">Situation</div>
+                    <render-label type="'situation'" labels="situations" index="task.situation"></render-label>
+                </div>
+                <div class="item item-input">
+                    <div class="input-label">Status</div>
+                    <render-label type="'status'" labels="statuses" index="task.status"></render-label>
+                </div>
+                <div class="item item-input">
+                    <div class="input-label">Range Date</div>
+                    {{task.start_date | date:'dd/MM/yyyy'}}            
+                    <span ng-if="task.end_date != null">
+                        -
+                        {{task.end_date | date:'dd/MM/yyyy'}}
+                    </span>
+                </div>
+                <div class="item item-input">
+                    <div class="input-label">Created</div>
+                    {{task.created | date:'dd/MM/yyyy HH:mm:ss'}}
+                </div>
+            </div>
         </div>
     </ion-content>
 </ion-view>

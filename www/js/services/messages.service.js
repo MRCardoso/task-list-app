@@ -1,8 +1,8 @@
-app.service('messageBox', ["$rootScope", "$ionicPopup", function($rootScope, $ionicPopup)
+app.factory('messageBox', ["$rootScope", "$ionicPopup", function($rootScope, $ionicPopup)
 {
 	var boxConfirm = null;
 	
-	this.alert = function(title, message, $scope, buttons)
+	function alert(title, message, $scope, buttons)
 	{
 		var params = {
 			template: message,
@@ -15,7 +15,7 @@ app.service('messageBox', ["$rootScope", "$ionicPopup", function($rootScope, $io
 		$ionicPopup.alert(params);
 	};
 
-	this.confirm = function(config, $scope)
+	function confirm(config, $scope)
 	{
 		if( boxConfirm == null)
 		{
@@ -45,5 +45,10 @@ app.service('messageBox', ["$rootScope", "$ionicPopup", function($rootScope, $io
 				]
 			});
 		}
+	};
+
+	return {
+		alert: alert,
+		confirm: confirm
 	};
 }])

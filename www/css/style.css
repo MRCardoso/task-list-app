@@ -174,6 +174,12 @@ label.item.valid-lr {
     color: #FEFEFE !important;
 }
 
+.item-radius{
+    border-radius: 4px;
+}
+.padding-2{
+    padding: 1.6% 3%;
+}
 .button-blue, 
 .bar-blue, 
 .item-blue, 
@@ -312,7 +318,9 @@ label.item.valid-lr {
     } 
 }
 .my-row{
-    width: 100%
+    width: 100%;
+    display: flex;
+    padding-right: 3%
 }
 
 .image-list-thumb {
@@ -407,4 +415,20 @@ label.item.valid-lr {
 .zoom-pane img {
     width: 100% !important;
     vertical-align: top !important;
+}
+.task-item{
+    border-radius: 3px;
+    border-left: none; 
+    margin: 3% 0;
+}
+.task-item-row{    
+    width: 100%;
+    /* position: relative; */
+    display: flex;
+    height: 70px;
+    /* padding: 1% 2% */
+}
+.task-item-row .col-20,
+.task-item-row .col-10{
+    text-align: right;
 }

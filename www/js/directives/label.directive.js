@@ -1,7 +1,7 @@
 app.directive('renderLabel', function(){
     return {
         restrict: 'E',
-        template: '<label class="label label-{{labelList[index].class}}" title="{{type}}">{{labelList[index].name}}</label>',
+        template: '<label class="label label-{{labelList[key].class}}" title="{{type}}">{{labelList[key].name}}</label>',
         scope: {
             labels: '=labels',
             index: '=index',
@@ -10,8 +10,8 @@ app.directive('renderLabel', function(){
         controller: function($scope){
             if ( $scope.type in app.appLabels)
             {
-                $scope.index = +$scope.index;
-                $scope.labelList = app.appLabels[$scope.type];
+                $scope.key = +$scope.index;
+                $scope.labelList = app.appLabels[$scope.type];                
             }
         }
     }

@@ -1,30 +1,30 @@
 <ion-view ng-init="findOne()">
     <ion-nav-title>
         <h1 class="title center">
-            {{ formData.id != undefined ? 'Update' : 'Create' }} Task
+            {{ task.id ? 'Update' : 'Create' }} Task
         </h1>        
     </ion-nav-title>
     <ion-nav-buttons side="right">
-        <a href="#/app/taskView/{{formData.id}}" class="button button-blue" title="View" ng-if="formData.id!= undefined">
+        <a href="#/app/taskView/{{task.id}}" class="button button-blue" title="View" ng-if="task.id!= undefined">
             <i class="ion-eye"></i>
         </a>
     </ion-nav-buttons>
     <ion-content>
         <form ng-submit="save()" class="list">
-            <label class="item item-input" ng-class="{ 'has-error' : formData.title=='' || formData.title==null, 'valid-lr': formData.title.length>0}">
+            <label class="item item-input" ng-class="{ 'has-error' : task.title=='' || task.title==null, 'valid-lr': task.title.length>0}">
                 <span class="input-label">Title</span>
-                <input type="text" placeholder="Title" ng-model="formData.title" required>                
+                <input type="text" placeholder="Title" ng-model="task.title" required>                
             </label>
             <label class="item item-input">
                 <span class="input-label">Description</span>
-                <textarea type="text" placeholder="Description" ng-model="formData.description"></textarea>
+                <textarea type="text" placeholder="Description" ng-model="task.description"></textarea>
             </label>
             <label class="item item-input item-select">
                 <div class="input-label">
                     Priority
                 </div>
-                <select ng-model="formData.priority">
-                    <option ng-repeat="priority in priorities" value="{{priority.id}}">
+                <select ng-model="task.priority" name="priority">
+                    <option ng-repeat="priority in priorities" ng-selected="priority.id==task.priority" value="{{priority.id}}">
                         {{priority.name}}
                     </option>
                 </select>
@@ -33,30 +33,30 @@
                 <div class="input-label">
                     Situation
                 </div>
-                <select ng-model="formData.situation">
-                    <option ng-repeat="situation in situations" value="{{situation.id}}">
+                <select ng-model="task.situation" name="situation">
+                    <option ng-repeat="situation in situations" ng-selected="situation.id==task.situation" value="{{situation.id}}">
                         {{situation.name}}
                     </option>
                 </select>
             </label>
-            <label class="item item-input" ng-class="{ 'has-error' : formData.start_date=='' || formData.start_date==null, 'valid-lr': formData.start_date.length>0}">
+            <label class="item item-input" ng-class="{ 'has-error' : task.start_date=='' || task.start_date==null, 'valid-lr': task.start_date.length>0}">
                 <span class="input-label">Start</span>
-                <input type="date" ng-model="formData.start_date" required>
+                <input type="date" ng-model="task.start_date" required>
             </label>
             <label class="item item-input">
                 <span class="input-label">End</span>
-                <input type="date" ng-model="formData.end_date">
+                <input type="date" ng-model="task.end_date">
             </label>
             <label class="item item-input">
                 <span class="input-label">Status</span>
                 <label class="toggle">
-                    <input type="checkbox" ng-model="formData.status">
+                    <input type="checkbox" ng-model="task.status">
                     <div class="track">
                     <div class="handle"></div>
                     </div>
                 </label>
             </label>
-            <button type="submit" class="button button-block button-blue" ng-disabled="validate()">
+            <button type="submit" class="button button-block button-blue">
                 Save
             </button>
         </form>
