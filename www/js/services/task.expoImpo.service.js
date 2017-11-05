@@ -74,7 +74,7 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
                 // Closure to capture the file information.
                 reader.onloadend = function(e) {
                     try{
-                        Log.inf('file-im', e);
+                        Log.info('file-im', e);
                         var errors = [];
                         var success = false;
                         var csvArray = (e.target.result).split("\n").filter(function(r){ return r.length > 0; });
