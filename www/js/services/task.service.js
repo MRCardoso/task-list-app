@@ -1,7 +1,8 @@
-app.service('Task', ['Database', '$q',function(Database, $q)
+app.service('Task', ['$q','$http','Database', function($q, $http, Database)
 {
     var fields = {
         id: ['INTEGER PRIMARY KEY AUTOINCREMENT', null],
+        id_task_reference: ['INT', null],
         title: ['TEXT NOT NULL',''],
         description: ['TEXT',''],
         // 1 - low | 2 - average | 3 high
@@ -193,5 +194,12 @@ app.service('Task', ['Database', '$q',function(Database, $q)
             .where({situation: 1})
             .one();
     };
-
+    
+    this.downOld = function(){
+        $http.get('./task-list-old-storage.json').then(function(r){            
+            localStorage.setItem('task', angular.toJson(r.data));
+        }, function(e){
+            console.log(e);
+        })
+    }
 }]);

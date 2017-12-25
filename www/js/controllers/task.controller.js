@@ -17,6 +17,7 @@ app.controller('TaskController', [
         */
         $scope.find = function()
         {
+            Loading.show();
             Task.find().then(function(r){
                 $scope.tasks = r;
             }, function(e){
@@ -24,9 +25,10 @@ app.controller('TaskController', [
             }).finally(function() {
                 $timeout(function () {
                     $scope.$broadcast('scroll.refreshComplete');
+                    Loading.hide();
                 },100);
             });
-        }
+        };
         
         /**
         | --------------------------------------------------------------------
@@ -203,4 +205,8 @@ app.controller('TaskController', [
         $scope.slideChanged = function(index) {
             $scope.slideIndex = index;
         };
+
+        $scope.downloadOld = function(){
+            Task.downOld();
+        }
 }]);

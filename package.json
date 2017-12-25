@@ -3,7 +3,7 @@
   "version": "0.1.6",
   "description": "TaskList: An Ionic project",
   "dependencies": {
-    "cordova-android": "^6.1.2",
+    "cordova-android": "6.3.0",
     "cordova-sqlite-storage": "^2.0.4",
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
