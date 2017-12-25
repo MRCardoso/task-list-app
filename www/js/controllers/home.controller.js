@@ -1,4 +1,4 @@
-app.controller('HomeController', ["$scope", "$filter", "messageBox", "Loading", "Task", function ($scope, $filter, messageBox, Loading,Task)
+app.controller('HomeController', ["$scope", "$filter", "$timeout","messageBox", "Loading", "Task", function ($scope, $filter, $timeout, messageBox, Loading,Task)
 {
     $scope.date = new Date();
     $scope.showCalendar = true;
@@ -20,7 +20,9 @@ app.controller('HomeController', ["$scope", "$filter", "messageBox", "Loading", 
     };
     
     $scope.$watch('date', function(d){
-        $scope.findOpen();
+        $timeout(function(){
+            $scope.findOpen();
+        }, 500)
     });
 
     $scope.toggleGroup = function(item) {

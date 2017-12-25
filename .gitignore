@@ -7,3 +7,4 @@ plugins/
 .vscode/
 buipub.sh
 www/lib/
+package-lock.json

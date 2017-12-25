@@ -3,7 +3,13 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var app = angular.module('starter', ['ionic', 'ngCordova', 'chart.js']);
+var app = angular.module('starter', [
+    'ionic', 
+    'ngCordova', 
+    'chart.js',
+    'storelitedb',
+    'logding.helper'
+]);
 
 app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate,TaskSync) 
 {
@@ -24,6 +30,11 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
             StatusBar.styleDefault();
             StatusBar.backgroundColorByHexString("#4E8FBD");
         }
+    });
+
+    DBUtil.setObject('db.config', {
+        dbName: 'mrc.tasklist', // default custom.db
+        dbSize: (10*1024*1024)// default 5MB
     });
 
     TaskSync.initialize();
