@@ -11,7 +11,7 @@ var app = angular.module('starter', [
     'logding.helper'
 ]);
 
-app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate,TaskSync) 
+app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate,TaskSync, DBUtil) 
 {
     $ionicPlatform.ready(function()
     {   
