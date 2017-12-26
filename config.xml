@@ -44,4 +44,9 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <plugin name="cordova-sqlite-storage" spec="^2.0.4" />
     <engine name="android" spec="~6.3.0" />
+    <plugin name="cordova-plugin-badge" spec="^0.8.5" />
+    <plugin name="cordova-plugin-app-event" spec="^1.2.1" />
+    <plugin name="cordova-plugin-x-toast" spec="^2.6.0" />
+    <plugin name="cordova-plugin-compat" spec="^1.2.0" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.0" />
 </widget>
