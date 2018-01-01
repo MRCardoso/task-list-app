@@ -1,4 +1,4 @@
-app.appLabels = {
+angular.module('starter').constant('appLabel', {
     "priority":
     {
         "1": 
@@ -87,4 +87,4 @@ app.appLabels = {
             "color": "#28a54c"
         }
     }
-};
+});

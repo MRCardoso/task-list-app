@@ -1,27 +1,17 @@
-app.controller('loginController', ["$scope", "$ionicModal", function($scope,$ionicModal){
-    // Form data for the login modal
-    $scope.loginData = {};
+angular.module('starter').controller('loginController', ["$scope", "$ionicModal","$state", "messageBox", "User", function($scope,$ionicModal,$state,messageBox,User)
+{
+    $scope.signinData = {};
 
-    // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal = modal;
-    });
-
-    // Triggered in the login modal to close it
-    $scope.closeLogin = function() {
-        $scope.modal.hide();
-    };
-
-    // Open the login modal
-    $scope.login = function() {
-        $scope.modal.show();
-    };
-
-    // Perform the login action when the user submits the login form
-    $scope.doLogin = function() {
-        console.log('Doing login', $scope.loginData);
-        $timeout(function() { $scope.closeLogin(); }, 1000);
+    $scope.goHome = function(){
+        $state.go('app.home');
+    }
+    $scope.signin = function()
+    {
+        var data = angular.extend({username: null,password: null}, this.signinData);
+        User.signin(data).then(function(data){
+            $state.go('app.home');
+        },function(err){
+            messageBox.alert('Error', ['<div class="center">',err,'</div>'].join(''), $scope);
+        });
     };
 }])

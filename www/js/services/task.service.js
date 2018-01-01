@@ -1,4 +1,4 @@
-app.service('Task', ['$q','$http','Database', function($q, $http, Database)
+angular.module('starter').service('Task', ['$q','$http','Database', function($q, $http, Database)
 {
     var fields = {
         id: ['INTEGER PRIMARY KEY AUTOINCREMENT', null],

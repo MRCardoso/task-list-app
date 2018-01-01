@@ -1,4 +1,4 @@
-app.factory('BadgeHelper', ['$ionicPlatform', '$cordovaBadge', 'messageBox', 'Log', '$q', 'Task', 'Loading','$state', function($ionicPlatform, $cordovaBadge, messageBox, Log, $q, Task, Loading, $state){
+angular.module('starter').factory('BadgeHelper', ['$ionicPlatform', '$cordovaBadge', 'messageBox', 'Log', '$q', 'Task', 'Loading','$state', function($ionicPlatform, $cordovaBadge, messageBox, Log, $q, Task, Loading, $state){
 
     /**
     | --------------------------------------------------------------------

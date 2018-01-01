@@ -1,4 +1,4 @@
-app.factory('TaskSync', ['$rootScope', '$timeout','Database', 'Task', 'Loading', 'Log', 'messageBox', 'ExpoImpo', function($rootScope, $timeout, Database, Task, Loading, Log, messageBox, ExpoImpo){
+angular.module('starter').factory('TaskSync', ['$rootScope', '$timeout','Database', 'Task', 'Loading', 'Log', 'messageBox', 'ExpoImpo', function($rootScope, $timeout, Database, Task, Loading, Log, messageBox, ExpoImpo){
     /**
      * Start the database local when not created
      */

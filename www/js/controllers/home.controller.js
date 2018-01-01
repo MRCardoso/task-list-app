@@ -1,4 +1,4 @@
-app.controller('HomeController', ["$scope", "$filter", "$timeout","messageBox", "Loading", "Task", function ($scope, $filter, $timeout, messageBox, Loading,Task)
+angular.module('starter').controller('HomeController', ["$scope", "$filter", "$timeout","messageBox", "Loading", "Task", function ($scope, $filter, $timeout, messageBox, Loading,Task)
 {
     $scope.date = new Date();
     $scope.showCalendar = true;

@@ -1,4 +1,4 @@
-app
+angular.module('starter')
 .directive('mcCalendar', function(){
     return {
         restrict: 'E',

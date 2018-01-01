@@ -1,4 +1,4 @@
-app.directive('renderLabel', function(){
+angular.module('starter').directive('renderLabel', function(){
     return {
         restrict: 'E',
         template: '<label class="label label-{{labelList[key].class}}" title="{{type}}">{{labelList[key].name}}</label>',
@@ -7,11 +7,11 @@ app.directive('renderLabel', function(){
             index: '=index',
             type: '=type'
         },
-        controller: function($scope){
-            if ( $scope.type in app.appLabels)
+        controller: function($scope, appLabel){
+            if ( $scope.type in appLabel)
             {
                 $scope.key = +$scope.index;
-                $scope.labelList = app.appLabels[$scope.type];                
+                $scope.labelList = appLabel[$scope.type];                
             }
         }
     }

@@ -1,13 +1,12 @@
 <ion-view cache-view="false">
     
     <ion-nav-title aria-label="center">
-        <i class="ion-android-list"></i>
         Task
     </ion-nav-title>
 
     <ion-nav-buttons side="right">
-        <button class="button button-icon icon ion-pound" ng-click="downloadOld()"></button>
-        <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></button>
+        <button class="button button-blue icon ion-pound" ng-click="downloadOld()"></button>
+        <button class="button button-blue icon ion-android-more-vertical" ng-click="popover.show($event)"></button>
     </ion-nav-buttons> 
     <ion-content padding="true">
         <ion-refresher on-refresh="find()" spinner="bubbles"></ion-refresher>
@@ -30,10 +29,13 @@
                                 {{item.start_date | date:'dd/MM/yyyy'}}
                                 -
                                 {{item.end_date | date:'dd/MM/yyyy'}}
-                            </small>
+                            </small>                            
                         </div>
                         <div class="col col-20">
-                            <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
+                            <render-label type="'situation'" labels="situations" index="item.situation"></render-label><br>
+                            <button ng-click="sync($event, item)" class="button button-small button-blue-inverse icon ion-android-sync">
+                                Sync
+                            </button>
                         </div>
                     </div>
                 </ion-item>

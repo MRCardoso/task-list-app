@@ -1,4 +1,4 @@
-app.factory('ExpoImpo', 
+angular.module('starter').factory('ExpoImpo', 
 ['$rootScope', 'messageBox', '$filter', 'Task', 'Log', '$cordovaFile', '$cordovaFileOpener2', '$q','BadgeHelper',
 function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileOpener2, $q, BadgeHelper){
     function validateDate(string)

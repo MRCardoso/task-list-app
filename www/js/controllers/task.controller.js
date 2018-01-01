@@ -1,8 +1,8 @@
-app.controller('TaskController', [
-    '$scope', '$ionicHistory','$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', 'Task','messageBox', 'Log','Loading','BadgeHelper','ExpoImpo',
-    function($scope, $ionicHistory,$state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo)
+angular.module('starter').controller('TaskController', [
+    '$scope', '$ionicHistory','$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', 'Task','messageBox', 'Log','Loading','BadgeHelper','ExpoImpo','appLabel',
+    function($scope, $ionicHistory,$state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo,appLabel)
     {
-        var labels = app.appLabels;
+        var labels = appLabel;
         $scope.tasks = [];
         $scope.priorities = labels['priority'];
         $scope.situations = labels['situation'];
@@ -208,5 +208,10 @@ app.controller('TaskController', [
 
         $scope.downloadOld = function(){
             Task.downOld();
+        };
+
+        $scope.sync = function(event, data){
+            event.stopPropagation();
+            Log.info('data', data);
         }
 }]);

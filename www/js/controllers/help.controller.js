@@ -1,4 +1,4 @@
-app.controller('HelpController', ["$scope", "$ionicModal", "$ionicSlideBoxDelegate", function ($scope, $ionicModal, $ionicSlideBoxDelegate)
+angular.module('starter').controller('HelpController', ["$scope", "$ionicModal", "$ionicSlideBoxDelegate", function ($scope, $ionicModal, $ionicSlideBoxDelegate)
 {
     $scope.topics = [
         {src: 'img/help/home.jpg', text: "Home, a calendar to filter all tasks in the selected day."},
