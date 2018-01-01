@@ -194,12 +194,4 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
             .where({situation: 1})
             .one();
     };
-    
-    this.downOld = function(){
-        $http.get('./task-list-old-storage.json').then(function(r){            
-            localStorage.setItem('task', angular.toJson(r.data));
-        }, function(e){
-            console.log(e);
-        })
-    }
 }]);
