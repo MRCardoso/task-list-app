@@ -205,11 +205,7 @@ angular.module('starter').controller('TaskController', [
         $scope.slideChanged = function(index) {
             $scope.slideIndex = index;
         };
-
-        $scope.downloadOld = function(){
-            Task.downOld();
-        };
-
+        
         $scope.sync = function(event, data){
             event.stopPropagation();
             Log.info('data', data);
