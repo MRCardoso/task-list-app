@@ -205,8 +205,4 @@ app.controller('TaskController', [
         $scope.slideChanged = function(index) {
             $scope.slideIndex = index;
         };
-
-        $scope.downloadOld = function(){
-            Task.downOld();
-        }
 }]);
