@@ -11,7 +11,7 @@ angular.module('starter')
             dbSize: (10 * 1024 * 1024)// default 5MB
         });
 
-        Loading.show();
+        Loading.show('spiral');
         Database.initialize({
             tableName: 'task',
             columns: Task.populateFields({}, 0)

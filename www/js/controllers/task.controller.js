@@ -17,7 +17,7 @@ angular.module('starter').controller('TaskController', [
         */
         $scope.find = function()
         {
-            Loading.show();
+            Loading.show('spiral');
             Task.find().then(function(r){
                 $scope.tasks = r;
             }, function(e){
@@ -38,7 +38,7 @@ angular.module('starter').controller('TaskController', [
         $scope.findOne = function()
         {
             $scope.task = Task.populateFields({},1);
-            Loading.show();
+            Loading.show('spiral');
             
             if( $state.params.taskId )
             {
