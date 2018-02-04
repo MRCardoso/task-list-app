@@ -9,7 +9,7 @@ angular.module('starter', [
     'chart.js',
     'storelitedb',
     'logding.helper'
-]).run(function($ionicPlatform, $rootScope, $http, UserData, TaskSync, DBUtil, Log){
+]).run(function($ionicPlatform, $rootScope, $http, $state, UserData, TaskSync, Log){
     $ionicPlatform.ready(function()
     {
         if(window.cordova && window.cordova.plugins.Keyboard) 
@@ -29,17 +29,13 @@ angular.module('starter', [
         }
     });
     
-    $rootScope.$on('auth.user.refresh', function(){
+    $rootScope.$on('auth.user.refresh', function(e,user){
         Log.info('---------------------auth.user.refresh---------------------');
         var token = UserData.getToken();
-        $http.defaults.headers.common['x-access-token'] = token;
+        $http.defaults.headers.post['x-access-token'] = token;
         $rootScope.isAuth = (token != null ? true : false);
         $rootScope.userData = UserData.find();
-    })
-
-    DBUtil.setObject('db.config', {
-        dbName: 'mrc.tasklist', // default custom.db
-        dbSize: (10*1024*1024)// default 5MB
+        $state.reload();
     });
 
     TaskSync.initialize();

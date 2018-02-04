@@ -42,29 +42,33 @@
 
 		<script src="lib/chart.js/dist/Chart.min.js"></script>
 		<script src="lib/angular-chart.js/dist/angular-chart.min.js"></script>
+		<script src="/lib/angular-cookies/angular-cookies.js"></script>
 		<script src="lib/storelitedb/dist/js/storelitedb.min.js"></script>
 		<script src="lib/logding-helper/dist/js/logding-helper.min.js"></script>
 
 		<!-- your app's js -->
 		<script src="js/app.js"></script>
 		<script src="js/app.config.js"></script>
+		<script src="js/app.routes.js"></script>
+		<script src="js/httpInterceptors.service.js"></script>
+		
 		<!--Constants-->
 		<script src="js/app.setting.constant.js"></script>
 		<script src="js/constants/app.label.constant.js"></script>
 		<!--Directives-->
 		<script src="js/directives/mccalendar.directive.js"></script>
 		<script src="js/directives/label.directive.js"></script>
-		<script src="js/directives/mine-auth.directive.js"></script>
+		<script src="js/directives/assigin.directive.js"></script>
 		<!--Providers-->
 		<script src="js/providers/user-data.provider.js"></script>
 		<!--Services-->
+		
 		<script src="js/services/task.service.js"></script>
 		<script src="js/services/user.service.js"></script>
 		<script src="js/services/task.synchronize.service.js"></script>
 		<script src="js/services/badge.helper.service.js"></script>
 		<script src="js/services/task.expoImpo.service.js"></script>
 		<!--Controllers-->
-		<script src="js/controllers/login.controller.js"></script>
 		<script src="js/controllers/task.controller.js"></script>
 		<script src="js/controllers/help.controller.js"></script>
 		<script src="js/controllers/home.controller.js"></script>
@@ -74,42 +78,9 @@
 		<ion-nav-bar class="bar-blue">
 			<ion-nav-back-button>
 			</ion-nav-back-button>
-			<mine-auth></mine-auth>
+			<assigin></assigin>
 		</ion-nav-bar>
 		
 		<ion-nav-view></ion-nav-view>
-
-		<script id="user-data-modal.html" type="text/ng-template">
-			<ion-modal-view>
-				<ion-header-bar>
-					<button class="button icon ion-close-round" ng-click="closeModal()"></button>
-					<h1 class="title">My Data</h1>
-				</ion-header-bar>
-				<ion-content>
-					<div class="list">
-						<a class="item item-icon-left" href="#">
-							<i class="icon ion-android-person"></i>
-							{{$root.userData.name}}
-						</a>
-					
-						<a class="item item-icon-left" href="#">
-							<i class="icon ion-android-contact"></i>
-							{{$root.userData.username}}
-						</a>
-					
-						<a class="item item-icon-left" href="#">
-							<i class="icon ion-email"></i>
-							{{$root.userData.email}}
-						</a>
-					
-						<a class="item item-icon-left" href="#" ng-click="signout()">
-							<i class="icon ion-log-out"></i>
-							Sign-out
-						</a>
-					
-					</div>
-				</ion-content>
-			</ion-modal-view>
-		</script>
 	</body>
 </html>

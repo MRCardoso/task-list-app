@@ -1,6 +1,6 @@
 angular.module('starter').controller('TaskController', [
-    '$scope', '$ionicHistory','$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', 'Task','messageBox', 'Log','Loading','BadgeHelper','ExpoImpo','appLabel',
-    function($scope, $ionicHistory,$state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo,appLabel)
+    '$scope', '$ionicHistory','$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', 'Task','messageBox', 'Log','Loading','BadgeHelper','ExpoImpo','appLabel','TaskSync',
+    function($scope, $ionicHistory,$state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo,appLabel,TaskSync)
     {
         var labels = appLabel;
         $scope.tasks = [];
@@ -206,8 +206,16 @@ angular.module('starter').controller('TaskController', [
             $scope.slideIndex = index;
         };
         
-        $scope.sync = function(event, data){
+        $scope.sync = function(event, data)
+        {
             event.stopPropagation();
-            Log.info('data', data);
+
+            TaskSync.syncOne(data).then(function(task){
+                data.id_task_reference = task._id;
+                if( window.cordova )
+                    $cordovaToast.show("Task sync with success!!", 'long', 'top');
+                else
+                    messageBox.alert('error', 'Task sync with success', $scope);
+            })
         }
 }]);

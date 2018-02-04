@@ -20,21 +20,21 @@
             <ion-list show-delete="showRemove">
                 <ion-item ng-repeat="item in $root.filtered = (tasks | filter:filter) | orderBy: '-id'" class="task-item">
                     <div class="task-item-row" style="border-left: 4px solid {{priorities[item.priority].color}}" ng-click="viewTask(item.id)">
-                        <div class="col col-75">
+                        <div class="col col-100">
                             <ion-delete-button class="{{hasItem(item.id) != -1 ? 'ion-ios-checkmark' : 'ion-ios-circle-outline'}}" ng-click="storeItem(item.id,$event)"></ion-delete-button>
                             <ion-option-button class="button-blue ion-edit" ui-sref="app.taskedit({'taskId': item.id})"></ion-option-button>
-                            <h2 ng-bind="item.title"></h2>
-                            <small class="small-text">
-                                {{item.start_date | date:'dd/MM/yyyy'}}
-                                -
-                                {{item.end_date | date:'dd/MM/yyyy'}}
-                            </small>                            
-                        </div>
-                        <div class="col col-20">
-                            <render-label type="'situation'" labels="situations" index="item.situation"></render-label><br>
-                            <button ng-click="sync($event, item)" class="button button-small button-blue-inverse icon ion-android-sync">
-                                Sync
-                            </button>
+                            <div class="left">
+                                <h2>
+                                    {{item.title}}
+                                    <small class="small-text">
+                                        {{item.start_date | date:'dd/MM/yyyy'}} - {{item.end_date | date:'dd/MM/yyyy'}}
+                                    </small>
+                                </h2>
+                                <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
+                            </div>
+                            <div class="right">
+                                <button ng-if="item.id_task_reference==null" ng-click="sync($event, item)" class="button button-small button-blue-inverse icon ion-android-sync"></button>
+                            </div>
                         </div>
                     </div>
                 </ion-item>

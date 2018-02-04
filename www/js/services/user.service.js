@@ -7,10 +7,10 @@ angular.module('starter').service('User', ["$q","$http","$rootScope","AppSetting
             .post(AppSetting.urlSignin(),data)
             .then(function(res){
                 UserData.add(res.data.user);
-                $rootScope.$broadcast('auth.user.refresh');
+                $rootScope.$broadcast('auth.user.refresh', "signin");
                 resolve(res.data.user);
             }, function(e){
-                reject(e.data.message);      
+                reject(e.data.message);
             });
         });
     };
@@ -20,7 +20,7 @@ angular.module('starter').service('User', ["$q","$http","$rootScope","AppSetting
             .post(AppSetting.urlSignout(),{})
             .then(function(res){
                 UserData.add(null);
-                $rootScope.$broadcast('auth.user.refresh');
+                $rootScope.$broadcast('auth.user.refresh', "signout");
                 resolve(res.data);
             }, function(e){
                 reject(e.data.message);

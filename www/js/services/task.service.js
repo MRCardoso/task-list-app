@@ -194,4 +194,29 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
             .where({situation: 1})
             .one();
     };
+
+    this.saveSyncId = function(id_task_reference, id){
+        return db.update('task', {id_task_reference: id_task_reference}, {id: id});
+    };
+
+    this.saveByServer = function(data){
+        return this.save({
+            id_task_reference: data._id,
+            title:          data.title,
+            description:    data.description,
+            priority:       data.priority,
+            situation:      data.situation,
+            status:         data.status,
+            created:        new Date(data.created),
+            start_date:     new Date(data.start_date),
+            end_date:       (data.end_date != null ? new Date(data.end_date) : null)
+        });
+    };
+
+    this.findByReference = function(id_task_reference){
+        return DB().select(['*'])
+            .from('task')
+            .where({id_task_reference: id_task_reference})
+            .one();
+    };
 }]);
