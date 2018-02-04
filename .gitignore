@@ -6,6 +6,7 @@ platforms/
 plugins/
 .vscode/
 buipub.sh
+asrc.sh
 www/lib/
 package-lock.json
 www/js/app.setting.constant.js
