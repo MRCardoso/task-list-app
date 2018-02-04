@@ -1,12 +1,14 @@
 {
   "name": "tasklist",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "TaskList: An Ionic project",
   "dependencies": {
     "cordova-plugin-app-event": "^1.2.1",
     "cordova-plugin-badge": "^0.8.5",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-file": "^4.3.3",
+    "cordova-plugin-file-opener2": "git+https://github.com/pwlin/cordova-plugin-file-opener2.git",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-splashscreen": "~4.0.1",
     "cordova-plugin-statusbar": "^2.4.0",
@@ -46,7 +48,9 @@
       "cordova-plugin-app-event": {},
       "cordova-plugin-x-toast": {},
       "cordova-plugin-compat": {},
-      "cordova-plugin-statusbar": {}
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-file-opener2": {}
     },
     "platforms": []
   }

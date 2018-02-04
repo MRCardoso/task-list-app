@@ -41,7 +41,7 @@ app.factory('BadgeHelper', ['$ionicPlatform', '$cordovaBadge', 'messageBox', 'Lo
 
     function redirectBadge(action)
     {
-        Loading.show();
+        Loading.show('spiral');
         Task.opened().then(function(opened){
             Log.info("task-open: " + opened.total);
             addBadge(opened.total)

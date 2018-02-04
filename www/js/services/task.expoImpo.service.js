@@ -134,7 +134,7 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
                     }
                 };
                 // Read in the image file as a data URL.
-                reader.readAsText(f,'UTF-8')//, 'ISO-8859-1');
+                reader.readAsText(f, 'ISO-8859-1');// ,'UTF-8')
             }
             else{
                 reject("The extension this file is not a valid csv file!");

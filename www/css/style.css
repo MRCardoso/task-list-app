@@ -364,7 +364,8 @@ label.item.valid-lr {
     letter-spacing: 1px;
     position: absolute;
     font-family: 'Open Sans Condensed', sans-serif;
-    bottom: 0;
+    opacity: 0.7;
+    top: 1.2%;
 }
 .image-item{
     list-style-type: circle !important;

@@ -5,7 +5,7 @@ app.controller('HomeController', ["$scope", "$filter", "$timeout","messageBox", 
 
     $scope.findOpen = function()
     {
-        Loading.show();
+        Loading.show('spiral');
         var start = new Date($filter('date')($scope.date, 'yyyy-MM-dd 00:00:00')).getTime();
         var end = new Date($filter('date')($scope.date, 'yyyy-MM-dd 23:59:59')).getTime();
 
