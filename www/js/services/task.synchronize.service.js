@@ -4,7 +4,7 @@ app.factory('TaskSync', ['$rootScope', '$timeout','Database', 'Task', 'Loading',
      */
     function initialize()
     {
-        Loading.show();
+        Loading.show('spiral');
         Database.initialize({
             tableName: 'task',
             columns: Task.populateFields({}, 0)
