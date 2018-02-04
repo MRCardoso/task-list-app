@@ -57,7 +57,12 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
      * prepare the field for standard for app
      * @param {object} task the item with data to be validate 
      */
-    this.prepare = function(task){
+    this.prepare = function (original){
+        /**
+         * Bug no android 4, dava erro no ng-model para data
+         * nao era atualizado data com new Date()
+         */
+        var task = angular.copy(original);
         task.priority = String(task.priority);
         task.situation = String(task.situation);
         task.status = (task.status == 'true' ? true: false);
