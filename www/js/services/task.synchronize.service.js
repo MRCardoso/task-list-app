@@ -5,6 +5,11 @@ app.factory('TaskSync', ['$rootScope', '$timeout','Database', 'Task', 'Loading',
     function initialize()
     {
         Loading.show('spiral');
+        Database.setConnectionOptions({
+            dbName: 'mrc.tasklist',
+            showLogs: false,
+            dbSize: (10 * 1024 * 1024)
+        });
         Database.initialize({
             tableName: 'task',
             columns: Task.populateFields({}, 0)

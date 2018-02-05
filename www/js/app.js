@@ -11,7 +11,7 @@ var app = angular.module('starter', [
     'logding.helper'
 ]);
 
-app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate,TaskSync, DBUtil) 
+app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScrollDelegate, $ionicNavBarDelegate,TaskSync)
 {
     $ionicPlatform.ready(function()
     {   
@@ -30,11 +30,6 @@ app.run(function($ionicPlatform, $ionicPopup, $ionicLoading,$rootScope,$ionicScr
             StatusBar.styleDefault();
             StatusBar.backgroundColorByHexString("#4E8FBD");
         }
-    });
-
-    DBUtil.setObject('db.config', {
-        dbName: 'mrc.tasklist', // default custom.db
-        dbSize: (10*1024*1024)// default 5MB
     });
 
     TaskSync.initialize();
