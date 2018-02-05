@@ -1,0 +1,1 @@
+ALTER TABLE task ADD COLUMN id_task_reference INT NULL;

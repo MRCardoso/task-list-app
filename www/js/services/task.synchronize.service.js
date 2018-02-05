@@ -21,6 +21,7 @@ angular.module('starter')
             .then(function(message){
                 messageBox.alert("Success", message, $rootScope);
             });
+            // migrate();
         }, function(e){
             messageBox.alert('Error','No was possible start the app',$rootScope);
         }).finally(function(){
@@ -177,6 +178,29 @@ angular.module('starter')
                 reject(e.data.message);      
             });
         });
+    }
+
+    function migrate(){
+        return $q(function(resolve,reject){
+            $http.get('./migrations.json',{}).then(function(res){
+                var scripts = res.data;
+                db.select(['path'])
+                .from('migration')
+                .where({ path: { operator: 'IN', value: scripts } })
+                .all()
+                .then(function(r){
+                    // var files = scripts.filter(function(s){
+                    //     return r
+                    // })
+                    // angular.forEach(sa, function (filename, i) {
+                    //     filename = filename.replace('www', '');
+                    //     $http.get(filename).then(function (script) {
+                    //         // db.query(script.data).then(resolve,reject);
+                    //     })
+                    // })
+                });
+            })
+        })
     }
     
     return {

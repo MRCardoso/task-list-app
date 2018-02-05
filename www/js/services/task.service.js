@@ -2,7 +2,7 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
 {
     var fields = {
         id: ['INTEGER PRIMARY KEY AUTOINCREMENT', null],
-        id_task_reference: ['INT', null],
+        // id_task_reference: ['INT', null],
         title: ['TEXT NOT NULL',''],
         description: ['TEXT',''],
         // 1 - low | 2 - average | 3 high

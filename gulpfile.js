@@ -6,6 +6,10 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var Q = require('q');
+var file = require('gulp-file');
+var args = require('yargs').argv;
+var filelist = require('gulp-filelist');
 
 var paths = {
   sass: ['./scss/**/*.scss']
@@ -48,4 +52,17 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+gulp.task('migration-add', function () {
+  var name = args.name || null;
+  if (name !== null) {
+	file(`${Date.now()}-${name}.sql`, '')
+		.pipe(gulp.dest('./www/migrations'))
+		.pipe(gulp.src('./www/**/*.sql'))
+		.pipe(filelist('../migrations.json'))
+		.pipe(gulp.dest('./www/migrations'));
+  }
+  else
+    console.log('Forneça um nome para o arquivo');
 });
