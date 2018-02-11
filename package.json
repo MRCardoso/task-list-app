@@ -1,6 +1,6 @@
 {
   "name": "tasklist",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "TaskList: An Ionic project",
   "dependencies": {
     "cordova-plugin-app-event": "^1.2.1",
