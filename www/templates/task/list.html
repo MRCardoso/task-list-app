@@ -8,10 +8,10 @@
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></button>
     </ion-nav-buttons> 
-    <ion-content padding="true">
-        <ion-refresher on-refresh="find()" spinner="bubbles"></ion-refresher>
+    <ion-content padding="false">
+        <ion-refresher on-refresh="find()" spinner="spiral"></ion-refresher>
         <div ng-init="find()">
-            <div class="item-blue item-radius item-input-inset">
+            <div class="item-blue item-input-inset">
                 <label class="item-input-wrapper">
                     <i class="icon ion-ios-search placeholder-icon"></i>
                     <input type="search" placeholder="Search" ng-model="filter">
@@ -27,11 +27,13 @@
                             <h2 ng-bind="item.title"></h2>
                             <small class="small-text">
                                 {{item.start_date | date:'dd/MM/yyyy'}}
-                                -
-                                {{item.end_date | date:'dd/MM/yyyy'}}
+                                <span data-ng-show="item.end_date">
+                                    -
+                                    {{item.end_date | date:'dd/MM/yyyy'}}
+                                </span>
                             </small>
                         </div>
-                        <div class="col col-20">
+                        <div class="col col-20 task-info">
                             <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
                         </div>
                     </div>
