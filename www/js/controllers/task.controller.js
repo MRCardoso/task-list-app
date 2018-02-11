@@ -83,7 +83,7 @@ app.controller('TaskController', [
         */
         $scope.remove = function(id)
         {
-            var message = "Do you want remove the task("+$scope.arrayIds.join(',')+")?";
+            var message = "Do you want remove the " + $scope.arrayIds.length +" task?";
             $scope.arrayIds = [];
             messageBox.confirm({
                 "title": "Delete task",

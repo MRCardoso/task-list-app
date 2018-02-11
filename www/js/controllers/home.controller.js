@@ -11,7 +11,7 @@ app.controller('HomeController', ["$scope", "$filter", "$timeout","messageBox", 
 
         Task.find(['*'], {start_date: {operator: 'BETWEEN', value: [start,end]}})
         .then(function(tasks){
-            $scope.openTasks = tasks;
+            $scope.openTasks = tasks.map(function (r) { return Task.prepare(r); });
         }, function(e){
             messageBox.alert('error', 'Houve um erro ao carregar tarefas', $scope);
         }).finally(function(){
