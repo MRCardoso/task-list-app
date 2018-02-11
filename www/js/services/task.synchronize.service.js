@@ -12,6 +12,11 @@ angular.module('starter')
         });
 
         Loading.show('spiral');
+        Database.setConnectionOptions({
+            dbName: 'mrc.tasklist',
+            showLogs: false,
+            dbSize: (10 * 1024 * 1024)
+        });
         Database.initialize({
             tableName: 'task',
             columns: Task.populateFields({}, 0)

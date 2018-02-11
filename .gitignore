@@ -9,4 +9,10 @@ buipub.sh
 asrc.sh
 www/lib/
 package-lock.json
+.DS_Store
+www/.DS_Store
+www/js/.DS_Store
+www/templates/.DS_Store
+www/img/.DS_Store
+www/img/help/.DS_Store
 www/js/app.setting.constant.js

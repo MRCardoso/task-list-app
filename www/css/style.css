@@ -418,18 +418,30 @@ label.item.valid-lr {
     vertical-align: top !important;
 }
 .task-item{
-    border-radius: 3px;
+    /* border-radius: 3px; */
     border-left: none; 
-    margin: 3% 0;
+    border-top: none;
+    margin: 0;
 }
 .task-item-row{    
     width: 100%;
     /* position: relative; */
     display: flex;
     height: 70px;
-    /* padding: 1% 2% */
+    padding: 1% 2%
 }
 .task-item-row .col-20,
 .task-item-row .col-10{
     text-align: right;
+}
+.task-info{
+    position: absolute;
+    right: 1%;
+    bottom: 0;
+    display: flex;
+    padding-right: 20%;
+    /* height: 100%; */
+    border-top: 1px solid #F4F4F9;
+    /* border-left: 1px solid #F4F4F9; */
+    /* background: #222; */
 }

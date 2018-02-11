@@ -28,7 +28,7 @@ angular.module('starter', [
             StatusBar.backgroundColorByHexString("#4E8FBD");
         }
     });
-    
+
     $rootScope.$on('auth.user.refresh', function(e,user){
         Log.info('---------------------auth.user.refresh---------------------');
         var token = UserData.getToken();
