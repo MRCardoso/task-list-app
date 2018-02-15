@@ -8,6 +8,10 @@ angular.module('starter').provider('UserData', ["AppSetting", function(AppSettin
         return angular.fromJson(localStorage.getItem(AppSetting.storageKey+'.auth')) || {};
     };
 
+    var authenticated = function(params) {
+        var user = find();
+        return (user ? true : false);
+    }
     var getToken = function(){
         var user = find();
         return user.authToken || null;
@@ -17,7 +21,8 @@ angular.module('starter').provider('UserData', ["AppSetting", function(AppSettin
         return {
             add: add,
             find: find,
-            getToken: getToken
+            getToken: getToken,
+            authenticated: authenticated
         }
     };
 }]);

@@ -57,6 +57,45 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
             file: file
         }
     }
+    /**
+    | --------------------------------------------------------------------
+    | Create a generic file with Blob in csv format, an array with columns splited by ';'
+    | --------------------------------------------------------------------
+    * @param {array} data
+    */
+    function createFileCsv(data)
+    {
+        var charEncode = "\ufeff";
+        var arrayData = [];
+        angular.forEach(data, function (lines, l) {
+            var fields = Object.keys(lines[0]);
+            arrayData.push(charEncode + fields.join(";") + "\n");
+            angular.forEach(lines, function (itens, i){
+                var values = [];
+                angular.forEach(itens, function (v, j)
+                {
+                    var t = (typeof v);
+                    if (v != null && typeof Date.parse(v) !== NaN && v.toString().length > 10){
+                        v = $filter('date')(v, 'dd/MM/yyyy HH:mm:ss');
+                    } else if(t == 'boolean'){
+                        v = (v == true || v == 'true' ? "1" : "0");
+                    } else if(t=='string'){
+                        v = v.replace(/\n/ig, '\s');
+                    }
+                    values.push((v == 'Invalid Date' ? '' : v));
+                })
+                arrayData.push(charEncode + values.join(";") + "\n");
+            });
+            arrayData.push(charEncode + fields.map(function(){return '';}).join(";") + "\n");
+        });
+        var name = Date.now() + '.csv';
+        var file = new Blob(arrayData, { type: "text/csv" });
+        return {
+            name: name,
+            str: arrayData.join(''),
+            file: file
+        }
+    }
 
     /**
      | --------------------------------------------------------------------
@@ -146,14 +185,15 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
     | Create a file with all tasks exists in your app
     | --------------------------------------------------------------------
     */
-    function download(tasks)
+    function download(tasks, message, callback)
     {
         var inApp = window.cordova;
-        var data = createFileDownload(tasks);
+        // var data = createFileDownload(tasks);
+        var data = createFileCsv(tasks);
 
         messageBox.confirm({
             "title": "Download Task",
-            "message": "Download a file with all your tasks?",
+            "message": (message || "Download a file with all your tasks?"),
             "success": function(e){
                 if( inApp ){
                     Log.info('cordova.file:', cordova.file);
@@ -163,25 +203,7 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
                         Log.success("$cordovaFile.writeFile.success:", success);
                         var targetPath = success.target.localURL;
                         // var targetPath = cordova.file.externalRootDirectory + data.name;
-                        messageBox.confirm({
-                            "title": "Success",
-                            "message": "Download successfully done",
-                            "btnCancel": "Close",
-                            "btnOk": "Open",
-                            "classCancel": "button-blue-inverse",
-                            "classOk": "button-balanced",
-                            "success": function(e){
-                                $cordovaFileOpener2.open(
-                                    targetPath,
-                                    'text/comma-separated-values'
-                                ).then(function(event) {
-                                    Log.success("$cordovaFileOpener2.open.success:", event);
-                                }, function(err) {
-                                    Log.err("$cordovaFileOpener2.open.err:", err);
-                                    messageBox.alert('Fail', 'Not was possible to open the downloaded file!', $rootScope);
-                                });
-                            }
-                        });
+                        openCsvFile(targetPath);
                     }, function(error) {
                         Log.err("$cordovaFile.writeFile.err:", error);
                         messageBox.alert('Fail', 'Do not was possible do the download!', $rootScope);
@@ -192,7 +214,11 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
                     link.href = URL.createObjectURL(data.file);
                     link.click();
                 }
-            }
+                if (typeof callback == 'function') {
+                    callback();
+                }
+            },
+            "fail": callback,
         },$rootScope);
     };
 
@@ -253,8 +279,31 @@ function($rootScope, messageBox, $filter, Task, Log, $cordovaFile, $cordovaFileO
         });
     };
 
+    function openCsvFile(targetPath) {
+        messageBox.confirm({
+            "title": "Success",
+            "message": "Download successfully done",
+            "btnCancel": "Close",
+            "btnOk": "Open",
+            "classCancel": "button-blue-inverse",
+            "classOk": "button-balanced",
+            "success": function (e) {
+                $cordovaFileOpener2.open(
+                    targetPath,
+                    'text/comma-separated-values'
+                ).then(function (event) {
+                    Log.success("$cordovaFileOpener2.open.success:", event);
+                }, function (err) {
+                    Log.err("$cordovaFileOpener2.open.err:", err);
+                    messageBox.alert('Fail', 'Not was possible to open the downloaded file!', $rootScope);
+                });
+            }
+        });
+    }
+
     return {
         download: download,
-        upload: upload
+        upload: upload,
+        createFileCsv: createFileCsv
     }
 }])

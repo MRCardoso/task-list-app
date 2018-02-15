@@ -8,7 +8,7 @@
     "ionic-ratings": "^0.3.0",
     "ngCordova": "^0.1.27-alpha",
     "angular-chart.js": "^1.1.1",
-    "storelitedb": "latest",
+    "storelitedb": "migration",
     "logding-helper": "latest"
   }
 }

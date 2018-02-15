@@ -1,8 +1,10 @@
 angular.module('starter').controller('TaskController', [
-    '$scope', '$ionicHistory','$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', 'Task','messageBox', 'Log','Loading','BadgeHelper','ExpoImpo','appLabel','TaskSync',
-    function($scope, $ionicHistory,$state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo,appLabel,TaskSync)
+    '$scope', '$ionicHistory', '$state', '$cordovaToast', '$ionicPopover', '$ionicSlideBoxDelegate', '$timeout', '$filter', 'Task', 'messageBox', 'Log', 'Loading', 'BadgeHelper', 'ExpoImpo', 'appLabel', 'TaskSync','UserData',
+    function ($scope, $ionicHistory, $state, $cordovaToast, $ionicPopover, $ionicSlideBoxDelegate, $timeout, $filter, Task, messageBox, Log, Loading, BadgeHelper, ExpoImpo, appLabel, TaskSync, UserData)
     {
         var labels = appLabel;
+        var tasks = [];
+        var customFilter = {sync:false,noSync:false};
         $scope.tasks = [];
         $scope.priorities = labels['priority'];
         $scope.situations = labels['situation'];
@@ -19,7 +21,7 @@ angular.module('starter').controller('TaskController', [
         {
             Loading.show('spiral');
             Task.find().then(function(r){
-                $scope.tasks = r;
+                $scope.tasks = tasks = r;
             }, function(e){
                 messageBox.alert('error', 'Cannot be was load the tasks', $scope);
             }).finally(function() {
@@ -209,13 +211,35 @@ angular.module('starter').controller('TaskController', [
         $scope.sync = function(event, data)
         {
             event.stopPropagation();
-
+            data.syncing = true;
             TaskSync.syncOne(data).then(function(task){
                 data.id_task_reference = task._id;
                 if( window.cordova )
                     $cordovaToast.show("Task sync with success!!", 'long', 'top');
-                else
-                    messageBox.alert('error', 'Task sync with success', $scope);
-            })
-        }
+            }).finally(function () { delete data.syncing; });
+        };
+        $scope.isSync = function(item)
+        {
+            if (UserData.authenticated()){
+                return (item.id_task_reference == null? false: true);
+            }
+            return null;
+        };
+
+        $scope.filterSync = function() {
+            $scope.tasks = $filter('filter')(tasks, function(i) {
+                if (customFilter.sync) return true;
+                return (i.id_task_reference !== null);
+            });
+            customFilter.sync = !customFilter.sync;
+            customFilter.noSync = false;
+        };
+        $scope.filterNoSync = function() {
+            $scope.tasks = $filter('filter')(tasks, function (i) {
+                if (customFilter.noSync) return true;
+                return (i.id_task_reference === null);
+            });
+            customFilter.noSync = !customFilter.noSync;
+            customFilter.sync = false;
+        };
 }]);

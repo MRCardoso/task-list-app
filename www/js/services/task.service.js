@@ -17,7 +17,9 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
     
     var db = null;
     var DB = function (){
-        db = Database.connect();
+        if(!db){
+            db = Database.connect();
+        }
         return db;
     };
 
@@ -144,10 +146,10 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
             data.end_date = data.end_date.getTime();
             
         if( angular.isUndefined(id) ){
-            return db.insert('task', data);
+            return DB().insert('task', data);
         } else{
             delete data.id;
-            return db.update('task', data, {id: id});
+            return DB().update('task', data, {id: id});
         }
     };
 

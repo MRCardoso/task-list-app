@@ -1,6 +1,23 @@
 angular.module('starter')
-    .factory('TaskSync', ['$rootScope', '$http', '$q', '$timeout', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'ExpoImpo','AppSetting', 
-    function ($rootScope, $http, $q, $timeout, Database, DBUtil, Task, Loading, Log, messageBox, ExpoImpo,AppSetting){
+.factory('TaskSync', [
+    '$rootScope', '$http', '$q', '$timeout', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'ExpoImpo', 'AppSetting','UserData', 
+    function ($rootScope, $http, $q, $timeout, Database, DBUtil, Task, Loading, Log, messageBox, ExpoImpo, AppSetting, UserData){
+    var proccess = [
+        migrate,
+        migrateLocalStorage,
+        download,
+    ];
+    var errorList = [];
+    function proccessError(errors, message) {
+        return $q(function (resolve) {
+            if (errors.length > 0) {
+                errorList.push(errors);
+                message += " with " + errors.length + " error(s).";
+            }
+            resolve(message);
+        })
+    }
+    var fnVoid = function() {};
     /**
      * Start the database local when not created
      */
@@ -14,7 +31,8 @@ angular.module('starter')
         Loading.show('spiral');
         Database.setConnectionOptions({
             dbName: 'mrc.tasklist',
-            showLogs: false,
+            showLogs: true,
+            enableMigrations: true,
             dbSize: (10 * 1024 * 1024)
         });
         Database.initialize({
@@ -22,11 +40,16 @@ angular.module('starter')
             columns: Task.populateFields({}, 0)
         }).then(function(instance){
             db = instance;
-            download()
-            .then(function(message){
-                messageBox.alert("Success", message, $rootScope);
-            });
-            // migrate();
+            // progressSyncModal(proccess).then(function (){
+            //     if (errorList.length>0){
+            //         ExpoImpo.download(errorList, "There are someone errors in the sync, do you wish download the tasks with error?");
+            //     }
+            //     if (window.cordova) {
+            //         window.plugins.toast.show("Data was synced with successfull", 'long', 'top');
+            //     }
+            // }, function () {
+            //     messageBox.alert('Error', 'Sync Error', $rootScope);
+            // });
         }, function(e){
             messageBox.alert('Error','No was possible start the app',$rootScope);
         }).finally(function(){
@@ -34,42 +57,97 @@ angular.module('starter')
         });
     }
 
-    function modalProgress(options, scope){
-        options = options || {};
-
-        var deferred = $q.defer();
+    function progressSyncSimple(data){
+        scope = $rootScope.$new();
         scope.progress = 0;
-        scope.progressIndex = 1;
-        scope.progressTotal = options.data.length;
+
+        messageBox.alert("Sending Task " + data.title, [
+            '<div class="center">',
+                "<p>Sending Task for web app.</p>",
+                '<div class="progress">',
+                    '<div class="progress-item" style="width: {{progress}}%;">',
+                        '<span></span>',
+                        '<p class="percent">{{ progress }}%</p>',
+                    '</div>',
+                '</div>',
+            '</div>'
+        ].join(''), scope);
+
+        return scope;
+    }
+
+    function progressSyncModal(data){
+        var deferred = $q.defer();
+        scope = $rootScope.$new();
+        scope.message;
+        
+        scope.moduleProgress = 0;
+        scope.moduleIndex = 0;
+        scope.moduleTotal = data.length;
+
+        scope.itemProgress = 0;
+        scope.itemIndex = 0;
+        scope.itemTotal = 0;
 
         var p = messageBox.show({
-            title: (options.title || "Sync data"),
+            title: "Syncronizing data",
             message: [
                 '<div class="center">',
-                (options.message || "Sync data"),
-                '<p>{{progressIndex}}/{{progressTotal}}</p>',
-                '<progress max="100" value="{{ progress }}"></progress>',
-                '<small>{{progress}}%</small>',
+                '{{message}}',
+                '<p>{{moduleIndex}}/{{moduleTotal}}</p>',
+                '<div class="progress">',
+                    '<div class="progress-item" style="width: {{moduleProgress}}%;">',
+                        '<span></span>',
+                        '<p class="percent">{{ moduleProgress }}%</p>',
+                    '</div>',
+                '</div>',
+                '<p>{{itemIndex}}/{{itemTotal}}</p>',
+                '<div class="progress">',
+                    '<div class="progress-item" style="width: {{itemProgress}}%;">',
+                        '<span></span>',
+                        '<p>{{ itemProgress }}%</p>',
+                    '</div>',
+                '</div>',
                 '</div>'
             ].join('')
         }, scope);
 
         function progress(index){
-            if( index < options.data.length ){
-                var current = options.data[index];
-                $timeout(function(){
-                    scope.progress = Math.ceil( index * 100 / scope.progressTotal );
-                    var next = (index+1);
-                    scope.progressIndex = next;
-                    $timeout(function(){
-                        deferred.notify(current);
-                        progress(next);
+            if( index < data.length ){
+                var increment = Math.ceil(index * 100 / scope.moduleTotal);
+                scope.moduleProgress = increment;
+                scope.moduleIndex = (index + 1);
+                var current = data[index];
+                deferred.notify(index);
+                current(scope).then(function (success) {
+                    Log.success("ProgressSyncSucess: " + success);
+                }, function (error) {
+                    Log.err("ProgressError:", error);
+                }, function (row) {
+                    scope.itemIndex = row.i;
+                    scope.itemProgress = (row.t > scope.itemIndex ? Math.ceil(scope.itemIndex * 100 / row.t) : 100);
+                    scope.itemTotal = (row.t > scope.itemIndex ? row.t : scope.itemIndex);
+                    /**
+                     * Pego o percentual do processo atual(processo pai) soma
+                     * com o resultado:
+                     * multiplica o percentual do item corrente com o percentual do processo, 
+                     * divide pelo indice corrente, e divide por 100 para ter o percentual atual
+                     */
+                    var g = Math.round(increment + (((scope.itemProgress * scope.moduleProgress) / scope.moduleIndex) / 100) );
+                    if (g < 100) scope.moduleProgress = g;
+                }).finally(function() {
+                    $timeout(function() {
+                        scope.itemProgress = 0;
+                        progress((index + 1));
                     },500);
-                },500);
+                })
             } else{
-                scope.progress = 100;
-                p.close();
-                return deferred.resolve();
+                scope.itemProgress = 100;
+                scope.moduleProgress = 100;
+                $timeout(function() {
+                    p.close();
+                    return deferred.resolve();
+                },500)
             }
         }
 
@@ -77,86 +155,144 @@ angular.module('starter')
 
         return deferred.promise;
     }
+    /**
+     * Run migrations for the local database  of the app
+     */
+    function migrate(scope) {
+        scope.message = "Running Migrations!";
+        var deferred = $q.defer();
+        var listFails = [];
+
+        $http.get('./migrations.json', {}).then(function (res) {
+            var scripts = res.data.map(function (r) { return r.replace('www', ''); });
+            db.select(['path']).from('migrations').where({ path: { operator: 'IN', value: scripts } }).all().then(function (r) {
+                if (r.length > 0) {
+                    angular.forEach(r, function (m, i) {
+                        var index = scripts.indexOf(m.path)
+                        if (index != -1) {
+                            scripts.splice(index, 1);
+                        }
+                    })
+                }
+                var data = scripts;
+                var total = data.length;
+                function sync(index) {
+                    $timeout(function () {
+                        if (index < data.length) {
+                            var next = (index + 1);
+                            var filename = data[index];
+                            var current = {status: 1,path: filename,created: Date.now()};
+                            deferred.notify({ i: next, t: total});
+                            $http.get(filename).then(function (qData) {
+                                db.insert('migrations', current).then(function(){
+                                    db.query(qData.data).then(fnVoid, function (e) {
+                                        listFails.push(current);
+                                        db.remove('migrations', { path: filename });
+                                    }).finally(function() {
+                                        sync(next);
+                                    })
+                                },function(e){
+                                    listFails.push(current);
+                                    sync(next);
+                                });
+                            });
+                        } else {
+                            deferred.notify({ i: index, t: total});
+                            proccessError(listFails, "success run migrations.").then(deferred.resolve);
+                        }
+                    }, 500);
+                }
+
+                sync(0);
+            });
+        })
+        return deferred.promise;
+    }
 
     /**
      * Migrate the data in localstorage saved in old versions of the app
      * to the sqlite storage to the new version of app
      */
-    function migrateLocalStorage()
+    function migrateLocalStorage(scope)
     {
-        return $q(function (resolve, reject){
-            var listFails = [];
-            var data = angular.fromJson(localStorage.getItem('task')) || [];
-            if (data.length == 0) {
-                return resolve();
-            }
-            modalProgress({
-                title: "Migrating Data",
-                message: "Migrating localstorage data to the local device database",
-                data: data
-            }, $rootScope).then(function () {
-                var title = 'Success', message = '<div class="center">Success migrate tasks.</div>';
-                if (listFails.length > 0) {
-                    title = 'Attention';
-                    message = [
-                        '<div class="center">',
-                        message, ', however',
-                        '<p>It was not possible migrate ', listFails.length, ' task(s).</p>',
-                        '<p>Download ', (listFails.length == 1 ? 'this task' : 'these tasks'), '.</p>',
-                        '</div>'
-                    ].join('');
-                }
-                messageBox.alert(title, message, $rootScope).then(function () {
-                    localStorage.removeItem('task');
-                    if (listFails.length > 0) {
-                        ExpoImpo.download(listFails);
-                        reject();
-                    }
-                    resolve();
-                });
-            }, function () { reject(); }, function (current) {
-                // delete current.isNewRecord;
-                // delete current.id;
+        scope.message = "Migrating localstorage data to the local device database";
+        var deferred = $q.defer();
+        var listFails = [];
+        var data = angular.fromJson(localStorage.getItem('task')) || [];
+        var total = data.length;
+        
+        function sync(index) {
+            $timeout(function () {
+                if (index < data.length) {
+                    var next = (index + 1);
+                    var current = data[index];
+                    delete current.isNewRecord;
+                    delete current.id;
+                    deferred.notify({ i: next, t: total });
 
-                current.start_date = new Date(current.start_date);
-                if (current.end_date != null) current.end_date = new Date(current.end_date);
-                Task.save(current, undefined).then(function () { }, function (e) {
-                    Log.err('não foi possivel');
-                    listFails.push(current);
-                });
-            });
-        });
+                    current.start_date = new Date(current.start_date);
+                    if (current.end_date != null) current.end_date = new Date(current.end_date);
+                    Task.save(current, undefined).then(function() {}, function (e) {
+                        listFails.push(current);
+                    }).finally(function() {
+                        sync(next);  
+                    });
+                } else {
+                    localStorage.removeItem('task');
+                    deferred.notify({ i: index, t: total });
+                    proccessError(listFails, "success migrate tasks.").then(deferred.resolve);
+                }
+            }, 500);
+        }
+
+        sync(0);
+
+        return deferred.promise;
     }
 
     /**
-     * Make download of the tasks with the server(not implemented)
+     * Make download of the tasks with the server
      */
-    function download()
+    function download(scope,forceAuth)
     {
-        return $q(function(resolve, reject){
-            migrateLocalStorage().then(function(){
-                $http.get(AppSetting.urlListServer()).then(function (res) {
-                    modalProgress({
-                        title: "Sync Tasks",
-                        message: "Sync your tasks with the server",
-                        data: res.data
-                    }, $rootScope).then(function () {
-                        return resolve('<div class="center">Success to sync with server.</div>');
-                    }, function () {
-                        return reject('<div class="center">Não foi possivel adicionar a task</div>');
-                    }, function (current) {
-                        Task.findByReference(current._id).then(function (t) { }, function (err) {
-                            Task.saveByServer(current).then(function () { }, function (e) {
-                                reject('<div class="center">Não foi possivel adicionar a task</div>');
+        scope.message = "Load the tasks with the remote app";
+        forceAuth = angular.isUndefined(forceAuth) ? false : forceAuth;
+        if (!UserData.getToken() && !forceAuth){
+            return $q(function (resolve, reject) { reject("No has auth user"); });
+        }
+        var deferred = $q.defer();
+
+        $http.get(AppSetting.urlListServer()).then(function (res) {
+            var listFails = [];
+            var data = res.data;
+            var total = data.length;
+            function sync(index) {
+                if (index < data.length) {
+                    $timeout(function () {
+                        var next = (index + 1);
+                        var current = data[index];
+                        deferred.notify({ i: next, t: total});
+                        Task.findByReference(current._id).then(function(t){
+                            sync(next);
+                        }, function (err){
+                            Task.saveByServer(current).then(fnVoid, function (e) {
+                                listFails.push(current);
+                            }).finally(function() {
+                                sync(next);
                             });
                         });
-                    });
-                }, function (e) {
-                    reject(['<div class="center">', e.data.message, '</div>'].join(''));
-                });   
-            });
-        });
+                    },500);
+                } else {
+                    deferred.notify({ i: index, t: total });
+                    proccessError(listFails, "success dowload server tasks.").then(deferred.resolve);
+                }
+            }
+            sync(0);
+        },deferred.reject);
+        
+        return deferred.promise;
     }
+    
     /**
      * Make uploaf of the tasks with the server(not implemented)
      */
@@ -174,38 +310,17 @@ angular.module('starter')
                 start_date:      task.start_date,
                 end_date:        task.end_date
             }).then(function(res){
-                Task.saveSyncId(res.data.task._id, task.id).then(function(){
-                    resolve(res.data.task);
-                }, function(e){
-                    reject('No was possible save the task');
-                });
+                $timeout(function() {
+                    Task.saveSyncId(res.data.task._id, task.id).then(function(){
+                        resolve(res.data.task);
+                    }, function(e){
+                        reject('No was possible save the task');
+                    });
+                },1000);
             }, function(e){
-                reject(e.data.message);      
+                reject(e.data.message);
             });
         });
-    }
-
-    function migrate(){
-        return $q(function(resolve,reject){
-            $http.get('./migrations.json',{}).then(function(res){
-                var scripts = res.data;
-                db.select(['path'])
-                .from('migration')
-                .where({ path: { operator: 'IN', value: scripts } })
-                .all()
-                .then(function(r){
-                    // var files = scripts.filter(function(s){
-                    //     return r
-                    // })
-                    // angular.forEach(sa, function (filename, i) {
-                    //     filename = filename.replace('www', '');
-                    //     $http.get(filename).then(function (script) {
-                    //         // db.query(script.data).then(resolve,reject);
-                    //     })
-                    // })
-                });
-            })
-        })
     }
     
     return {
