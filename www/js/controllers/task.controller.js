@@ -102,6 +102,20 @@ angular.module('starter').controller('TaskController', [
             },$scope);
         };
 
+        /**
+        | --------------------------------------------------------------------
+        | trigger events handler
+        | --------------------------------------------------------------------
+        */
+        $scope.$on("task.update.list", function () {
+            $scope.find();
+        });
+
+        /**
+        | --------------------------------------------------------------------
+        | Watches
+        | --------------------------------------------------------------------
+        */
         $scope.$watch('showRemove',function(r){
             if( r == false && $scope.arrayIds.length > 0){
                 $scope.remove({operator: 'IN', value: $scope.arrayIds});
@@ -152,7 +166,7 @@ angular.module('starter').controller('TaskController', [
         */
         $scope.download = function (){
             $scope.popover.hide();
-            ExpoImpo.download($scope.filtered);
+            ExpoImpo.download([$scope.filtered]);
         };
 
         /**
@@ -208,6 +222,26 @@ angular.module('starter').controller('TaskController', [
             $scope.slideIndex = index;
         };
         
+        /**
+        | --------------------------------------------------------------------
+        | Update tasks with the server manually
+        | --------------------------------------------------------------------
+        */
+        $scope.syncWithServer = function() {
+            messageBox.confirm({
+                title: "Syncronize tasks",
+                message: "You with check per update in remote app?",
+                success: function (e) {
+                    TaskSync.dowload();
+                }
+            }, $scope);
+        };
+
+        /**
+        | --------------------------------------------------------------------
+        | Sends to server a task that no still synced
+        | --------------------------------------------------------------------
+        */
         $scope.sync = function(event, data)
         {
             event.stopPropagation();
@@ -218,6 +252,12 @@ angular.module('starter').controller('TaskController', [
                     $cordovaToast.show("Task sync with success!!", 'long', 'top');
             }).finally(function () { delete data.syncing; });
         };
+
+        /**
+        | --------------------------------------------------------------------
+        | validate if the current task already was synced
+        | --------------------------------------------------------------------
+        */
         $scope.isSync = function(item)
         {
             if (UserData.authenticated()){
@@ -226,6 +266,11 @@ angular.module('starter').controller('TaskController', [
             return null;
         };
 
+        /**
+        | --------------------------------------------------------------------
+        | Filters
+        | --------------------------------------------------------------------
+        */
         $scope.filterSync = function() {
             $scope.tasks = $filter('filter')(tasks, function(i) {
                 if (customFilter.sync) return true;

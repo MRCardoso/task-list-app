@@ -60,7 +60,7 @@ gulp.task('migration-add', function () {
 	file(`${Date.now()}-${name}.sql`, '')
 		.pipe(gulp.dest('./www/migrations'))
 		.pipe(gulp.src('./www/**/*.sql'))
-		.pipe(filelist('../migrations.json'))
+    .pipe(filelist('../migration-make.json'))
 		.pipe(gulp.dest('./www/migrations'));
   }
   else

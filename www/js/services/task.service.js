@@ -202,10 +202,23 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
             .one();
     };
 
+    /**
+     * Update the id of task in server, to link the task of the app with web
+     * @example Task.saveSyncId(id_server,id_local);
+     * @param {string} id_task_reference the _id of the web app store in mongodb
+     * @param {int} id the id of the task in local db
+     * @return Promise
+     */
     this.saveSyncId = function(id_task_reference, id){
         return db.update('task', {id_task_reference: id_task_reference}, {id: id});
     };
 
+    /**
+     * Create a task in app, by a object comes from api of the web app
+     * @example Task.saveByServer(Object with data}); the id reference is in '_id'
+     * @param {object} data the object with data of the task to be save
+     * @return Promise
+     */
     this.saveByServer = function(data){
         return this.save({
             id_task_reference: data._id,
@@ -220,10 +233,46 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
         });
     };
 
-    this.findByReference = function(id_task_reference){
+    /**
+     * Load a task by id task reference created in web app
+     * @example Task.findByReference(id_server); the id reference is in '_id'
+     * @param {stirng} id_task_reference the _id of the web app store in mongodb
+     * @return Promise
+     */
+    this.findOneReference = function(id_task_reference){
         return DB().select(['*'])
             .from('task')
             .where({id_task_reference: id_task_reference})
             .one();
+    };
+
+    /**
+     * List all id reference from task table when the id reference is not null
+     * @example Task.findReferences(); the id reference is in '_id'
+     * @return Promise
+     */
+    this.findReferences = function(){
+        return DB().select(['id_task_reference'])
+            .from('task')
+            .where({ id_task_reference: { operator: 'IS NOT', value: 'NULL'}})
+            .all();
+    };
+    
+    /**
+     * remove a or many tasks by your id_task_reference
+     * @example Task.removeReferences(id_server|[id_server]); the id reference is in '_id'
+     * @param {stirng|array} references the _id of the web app store in mongodb
+     * @return Promise
+     */
+    this.removeReferences = function (references)
+    {
+        if (references == null){
+            return $q(function (resolve, reject) { reject("invalid id of task reference from delete!") });
+        }
+        var id = references;
+        if (typeof references == 'object' && 'length' in references){
+            id = { operator: "IN", value: references };
+        }
+        return DB().remove('task', { id_task_reference: id });
     };
 }]);

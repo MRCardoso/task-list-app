@@ -1,33 +1,28 @@
 angular.module('starter')
 .factory('TaskSync', [
-    '$rootScope', '$http', '$q', '$timeout', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'ExpoImpo', 'AppSetting','UserData', 
-    function ($rootScope, $http, $q, $timeout, Database, DBUtil, Task, Loading, Log, messageBox, ExpoImpo, AppSetting, UserData){
-    var proccess = [
-        migrate,
-        migrateLocalStorage,
-        download,
-    ];
-    var errorList = [];
-    function proccessError(errors, message) {
-        return $q(function (resolve) {
-            if (errors.length > 0) {
-                errorList.push(errors);
-                message += " with " + errors.length + " error(s).";
-            }
-            resolve(message);
-        })
-    }
-    var fnVoid = function() {};
+    '$rootScope', '$http', '$q', '$timeout', '$filter', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'AppSetting', 'UserData','ProccessSync', 
+    function ($rootScope, $http, $q, $timeout, $filter,Database, DBUtil, Task, Loading, Log, messageBox, AppSetting, UserData, ProccessSync)
+{
+    ProccessSync.proccessUpdate = function (name) {
+        var updated = Date.now();
+        var index = proccesses.map(function (r, i) { if (r.name == name) return i; });
+        if (index[0] != undefined) {
+            proccesses[index[0]].lastUpdate = updated;
+        } else {
+            proccesses.push({ name: name, lastUpdate: updated });
+        }
+        Log.info("updated Sync " + name + ", Date: " + $filter('date')(updated,'dd/MM/yyyy HH:mm:ss'));
+        DBUtil.setObject('proccess.update', proccesses);
+    };
+
+    var proccesses = (DBUtil.getObject("proccess.update") || []);
+    var fnVoid = function () { };
+
     /**
      * Start the database local when not created
      */
     function initialize()
     {
-        DBUtil.setObject('db.config', {
-            dbName: 'mrc.tasklist', // default custom.db
-            dbSize: (10 * 1024 * 1024)// default 5MB
-        });
-
         Loading.show('spiral');
         Database.setConnectionOptions({
             dbName: 'mrc.tasklist',
@@ -40,120 +35,42 @@ angular.module('starter')
             columns: Task.populateFields({}, 0)
         }).then(function(instance){
             db = instance;
-            // progressSyncModal(proccess).then(function (){
-            //     if (errorList.length>0){
-            //         ExpoImpo.download(errorList, "There are someone errors in the sync, do you wish download the tasks with error?");
-            //     }
-            //     if (window.cordova) {
-            //         window.plugins.toast.show("Data was synced with successfull", 'long', 'top');
-            //     }
-            // }, function () {
-            //     messageBox.alert('Error', 'Sync Error', $rootScope);
-            // });
+            proccessMake();
         }, function(e){
             messageBox.alert('Error','No was possible start the app',$rootScope);
         }).finally(function(){
             Loading.hide();
         });
     }
-
-    function progressSyncSimple(data){
-        scope = $rootScope.$new();
-        scope.progress = 0;
-
-        messageBox.alert("Sending Task " + data.title, [
-            '<div class="center">',
-                "<p>Sending Task for web app.</p>",
-                '<div class="progress">',
-                    '<div class="progress-item" style="width: {{progress}}%;">',
-                        '<span></span>',
-                        '<p class="percent">{{ progress }}%</p>',
-                    '</div>',
-                '</div>',
-            '</div>'
-        ].join(''), scope);
-
-        return scope;
-    }
-
-    function progressSyncModal(data){
-        var deferred = $q.defer();
-        scope = $rootScope.$new();
-        scope.message;
-        
-        scope.moduleProgress = 0;
-        scope.moduleIndex = 0;
-        scope.moduleTotal = data.length;
-
-        scope.itemProgress = 0;
-        scope.itemIndex = 0;
-        scope.itemTotal = 0;
-
-        var p = messageBox.show({
-            title: "Syncronizing data",
-            message: [
-                '<div class="center">',
-                '{{message}}',
-                '<p>{{moduleIndex}}/{{moduleTotal}}</p>',
-                '<div class="progress">',
-                    '<div class="progress-item" style="width: {{moduleProgress}}%;">',
-                        '<span></span>',
-                        '<p class="percent">{{ moduleProgress }}%</p>',
-                    '</div>',
-                '</div>',
-                '<p>{{itemIndex}}/{{itemTotal}}</p>',
-                '<div class="progress">',
-                    '<div class="progress-item" style="width: {{itemProgress}}%;">',
-                        '<span></span>',
-                        '<p>{{ itemProgress }}%</p>',
-                    '</div>',
-                '</div>',
-                '</div>'
-            ].join('')
-        }, scope);
-
-        function progress(index){
-            if( index < data.length ){
-                var increment = Math.ceil(index * 100 / scope.moduleTotal);
-                scope.moduleProgress = increment;
-                scope.moduleIndex = (index + 1);
-                var current = data[index];
-                deferred.notify(index);
-                current(scope).then(function (success) {
-                    Log.success("ProgressSyncSucess: " + success);
-                }, function (error) {
-                    Log.err("ProgressError:", error);
-                }, function (row) {
-                    scope.itemIndex = row.i;
-                    scope.itemProgress = (row.t > scope.itemIndex ? Math.ceil(scope.itemIndex * 100 / row.t) : 100);
-                    scope.itemTotal = (row.t > scope.itemIndex ? row.t : scope.itemIndex);
-                    /**
-                     * Pego o percentual do processo atual(processo pai) soma
-                     * com o resultado:
-                     * multiplica o percentual do item corrente com o percentual do processo, 
-                     * divide pelo indice corrente, e divide por 100 para ter o percentual atual
-                     */
-                    var g = Math.round(increment + (((scope.itemProgress * scope.moduleProgress) / scope.moduleIndex) / 100) );
-                    if (g < 100) scope.moduleProgress = g;
-                }).finally(function() {
-                    $timeout(function() {
-                        scope.itemProgress = 0;
-                        progress((index + 1));
-                    },500);
-                })
-            } else{
-                scope.itemProgress = 100;
-                scope.moduleProgress = 100;
-                $timeout(function() {
-                    p.close();
-                    return deferred.resolve();
-                },500)
-            }
+    /*
+    | -------------------------------------------------------------------------------
+    | List and the proccess of to be run in the app
+    | -------------------------------------------------------------------------------
+    */
+    function proccessMake()
+    {
+        var current = new Date();
+        var pid = (DBUtil.getObject("proccess.update") || []);
+        var pDefault = [
+            migrate,
+            migrateLocalStorage,
+            download,
+        ];
+        if (pid.length > 0)
+        {
+            pid.map(function(r)
+            {
+                var index = pDefault.indexOf(eval(r.name));
+                if(index!= -1)
+                {
+                    var nextUpdate = new Date( r.lastUpdate + (1440 * 60 * 1000));
+                    if(current.getTime() < nextUpdate.getTime()){
+                        pDefault.splice(index, 1);
+                    }
+                }
+            })
         }
-
-        progress(0);
-
-        return deferred.promise;
+        return ProccessSync.proccessStart(pDefault);
     }
     /**
      * Run migrations for the local database  of the app
@@ -163,7 +80,7 @@ angular.module('starter')
         var deferred = $q.defer();
         var listFails = [];
 
-        $http.get('./migrations.json', {}).then(function (res) {
+        $http.get('migration-make.json', {}).then(function (res) {
             var scripts = res.data.map(function (r) { return r.replace('www', ''); });
             db.select(['path']).from('migrations').where({ path: { operator: 'IN', value: scripts } }).all().then(function (r) {
                 if (r.length > 0) {
@@ -198,7 +115,7 @@ angular.module('starter')
                             });
                         } else {
                             deferred.notify({ i: index, t: total});
-                            proccessError(listFails, "success run migrations.").then(deferred.resolve);
+                            ProccessSync.proccessFinish(listFails, "success run migrations.").then(deferred.resolve);
                         }
                     }, 500);
                 }
@@ -240,7 +157,7 @@ angular.module('starter')
                 } else {
                     localStorage.removeItem('task');
                     deferred.notify({ i: index, t: total });
-                    proccessError(listFails, "success migrate tasks.").then(deferred.resolve);
+                    ProccessSync.proccessFinish(listFails, "success migrate tasks.").then(deferred.resolve);
                 }
             }, 500);
         }
@@ -257,13 +174,15 @@ angular.module('starter')
     {
         scope.message = "Load the tasks with the remote app";
         forceAuth = angular.isUndefined(forceAuth) ? false : forceAuth;
-        if (!UserData.getToken() && !forceAuth){
-            return $q(function (resolve, reject) { reject("No has auth user"); });
+        if (!UserData.getToken() && !forceAuth)
+        {
+            return $q(function (resolve, reject) { resolve("No has auth user"); });
         }
         var deferred = $q.defer();
 
         $http.get(AppSetting.urlListServer()).then(function (res) {
             var listFails = [];
+            var arrayIds = [];
             var data = res.data;
             var total = data.length;
             function sync(index) {
@@ -272,7 +191,11 @@ angular.module('starter')
                         var next = (index + 1);
                         var current = data[index];
                         deferred.notify({ i: next, t: total});
-                        Task.findByReference(current._id).then(function(t){
+                        Task.findOneReference(current._id).then(function(t){
+                            var rIndex = arrayIds.indexOf(current._id);
+                            if (rIndex != -1){
+                                arrayIds.splice(rIndex, 1);
+                            }
                             sync(next);
                         }, function (err){
                             Task.saveByServer(current).then(fnVoid, function (e) {
@@ -283,11 +206,25 @@ angular.module('starter')
                         });
                     },500);
                 } else {
-                    deferred.notify({ i: index, t: total });
-                    proccessError(listFails, "success dowload server tasks.").then(deferred.resolve);
+                    var finisher = function() {
+                        $rootScope.$broadcast("task.update.list");
+                        deferred.notify({ i: index, t: total });
+                        ProccessSync.proccessFinish(listFails, "success dowload server tasks.").then(deferred.resolve);    
+                    }
+                    if (arrayIds.length>0){
+                        Task.removeReferences(arrayIds).then(fnVoid, function(e){ listFails.push(current); }).finally(finisher);
+                    } else{
+                        finisher();
+                    }
+                    
                 }
             }
-            sync(0);
+            Task.findReferences().then(function(references) {
+                arrayIds = references.map(function(r) {
+                    return r.id_task_reference
+                });
+                sync(0);
+            })
         },deferred.reject);
         
         return deferred.promise;
@@ -299,6 +236,7 @@ angular.module('starter')
     function sync(){}
 
     function syncOne(task){
+        Loading.show();
         return $q(function(resolve,reject){
             $http.post(AppSetting.urlSyncOne(), {
                 title:          task.title,
@@ -319,13 +257,20 @@ angular.module('starter')
                 },1000);
             }, function(e){
                 reject(e.data.message);
+            }).finally(function (params) {
+                $timeout(function () {
+                    Loading.hide();
+                }, 1000);
             });
         });
     }
     
     return {
         initialize: initialize,
+        proccessMake: proccessMake,
         syncOne: syncOne,
-        download: download
+        dowload: function() {
+            return ProccessSync.proccessStart([download]);
+        }
     }
 }])

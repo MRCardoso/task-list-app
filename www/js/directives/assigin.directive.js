@@ -4,10 +4,14 @@ angular.module('starter').directive('assigin', function(){
         scope: {
             onShow: '=?onShow'
         },
-        controller: ["$scope","$state", "$ionicModal", "UserData","User","messageBox", function($scope,$state,$ionicModal,UserData,User,messageBox){
+        controller: ["$scope", "$state", "$ionicModal", "$cordovaToast", "UserData", "User", "messageBox", "Log", "TaskSync", function ($scope, $state, $ionicModal, $cordovaToast, UserData, User, messageBox, Log, TaskSync){
+            function refreshAuth() {
+                $scope.$root.userData = UserData.find();
+                $scope.$root.isAuth = ($scope.$root.userData.getToken() != null ? true : false);
+            };
+            
+            refreshAuth();
             $scope.signinData = {};
-            $scope.$root.isAuth = (UserData.getToken() != null ? true : false);
-            $scope.$root.userData = UserData.find();
 
             $ionicModal.fromTemplateUrl('templates/signin.html', {
                 scope: $scope,
@@ -46,7 +50,14 @@ angular.module('starter').directive('assigin', function(){
                         });
                     }
                 });
-            }
+            };
+
+            $scope.$on('auth.user.refresh', function () {
+                Log.info('---------------------auth.user.refresh---------------------');
+                refreshAuth();
+                TaskSync.dowload();
+                $state.reload();
+            });
         }],
         template: [
             '<ion-nav-buttons side="left">',

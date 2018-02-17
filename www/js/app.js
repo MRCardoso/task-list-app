@@ -9,7 +9,7 @@ angular.module('starter', [
     'chart.js',
     'storelitedb',
     'logding.helper'
-]).run(function($ionicPlatform, $rootScope, $http, $state, UserData, TaskSync, Log){
+]).run(function($ionicPlatform, TaskSync){
     $ionicPlatform.ready(function()
     {
         if(window.cordova && window.cordova.plugins.Keyboard) 
@@ -28,15 +28,6 @@ angular.module('starter', [
             StatusBar.backgroundColorByHexString("#4E8FBD");
         }
     });
-
-    $rootScope.$on('auth.user.refresh', function(e,user){
-        Log.info('---------------------auth.user.refresh---------------------');
-        var token = UserData.getToken();
-        $http.defaults.headers.post['x-access-token'] = token;
-        $rootScope.isAuth = (token != null ? true : false);
-        $rootScope.userData = UserData.find();
-        $state.reload();
-    });
-
+    
     TaskSync.initialize();
 });

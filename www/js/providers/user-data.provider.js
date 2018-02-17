@@ -1,11 +1,22 @@
-angular.module('starter').provider('UserData', ["AppSetting", function(AppSetting)
+angular.module('starter').provider('UserData', ["$injector", "AppSetting", function ($injector,AppSetting)
 {
     var add = function(data){
         localStorage.setItem(AppSetting.storageKey+'.auth', angular.toJson(data));
     };
 
     var find = function(){
-        return angular.fromJson(localStorage.getItem(AppSetting.storageKey+'.auth')) || {};
+        var loadUser = angular.fromJson(localStorage.getItem(AppSetting.storageKey+'.auth')) || {};
+        loadUser.getToken = function() {
+            return (loadUser.authToken || null);
+        };
+        loadUser.getImage = function () {
+            setTimeout(function(){
+                var i = cordova.file.externalRootDirectory + loadUser.image.name;
+                console.log(i, cordova, window.plugins)
+                return i;
+            }, 500);
+        };
+        return loadUser;
     };
 
     var authenticated = function(params) {

@@ -7,9 +7,9 @@ body{
 .small-text{
     font-size: 12px; 
     opacity: 0.5;
-    margin: 0 2px;
-    padding: 3% 0;
-    text-align: center
+    /* margin: 0 2px; */
+    /* padding: 3% 0; */
+    float: right
 }
 
 /** Styling for the username field **/
