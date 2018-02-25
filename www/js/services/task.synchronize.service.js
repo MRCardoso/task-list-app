@@ -1,22 +1,11 @@
 angular.module('starter')
 .factory('TaskSync', [
-    '$rootScope', '$http', '$q', '$timeout', '$filter', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'AppSetting', 'UserData','ProccessSync', 
-    function ($rootScope, $http, $q, $timeout, $filter,Database, DBUtil, Task, Loading, Log, messageBox, AppSetting, UserData, ProccessSync)
+    '$rootScope', '$http', '$q', '$timeout', '$filter', '$resource', 'Database', 'DBUtil', 'Task', 'Loading', 'Log', 'messageBox', 'AppSetting', 'UserData', 'ProccessSync','TaskServer',
+    function ($rootScope, $http, $q, $timeout, $filter, $resource, Database, DBUtil, Task, Loading, Log, messageBox, AppSetting, UserData, ProccessSync, TaskServer)
 {
-    ProccessSync.proccessUpdate = function (name) {
-        var updated = Date.now();
-        var index = proccesses.map(function (r, i) { if (r.name == name) return i; });
-        if (index[0] != undefined) {
-            proccesses[index[0]].lastUpdate = updated;
-        } else {
-            proccesses.push({ name: name, lastUpdate: updated });
-        }
-        Log.info("updated Sync " + name + ", Date: " + $filter('date')(updated,'dd/MM/yyyy HH:mm:ss'));
-        DBUtil.setObject('proccess.update', proccesses);
-    };
-
-    var proccesses = (DBUtil.getObject("proccess.update") || []);
     var fnVoid = function () { };
+    var migrations = [];
+    var taskLocalStorage = angular.fromJson(localStorage.getItem('task')) || [];
 
     /**
      * Start the database local when not created
@@ -30,46 +19,56 @@ angular.module('starter')
             enableMigrations: true,
             dbSize: (10 * 1024 * 1024)
         });
+        
         Database.initialize({
             tableName: 'task',
             columns: Task.populateFields({}, 0)
         }).then(function(instance){
             db = instance;
-            proccessMake();
+            migrationToBeRun().then(proccessMake);
         }, function(e){
             messageBox.alert('Error','No was possible start the app',$rootScope);
         }).finally(function(){
             Loading.hide();
         });
     }
+    function migrationToBeRun() {
+        return $q(function(resolve,reject) {
+            $http.get('migration-make.json', {}).then(function (res) {
+                var scripts = res.data.map(function (r) { return r.replace('www', ''); });
+                db.select(['path']).from('migrations').where({ path: { operator: 'IN', value: scripts } }).all()
+                .then(function (r) {
+                    if (r.length > 0) {
+                        angular.forEach(r, function (m, i) {
+                            var index = scripts.indexOf(m.path)
+                            if (index != -1) {
+                                scripts.splice(index, 1);
+                            }
+                        })
+                    }
+                    resolve(scripts);
+                }, reject);
+            }, reject);
+        })
+    }
     /*
     | -------------------------------------------------------------------------------
     | List and the proccess of to be run in the app
     | -------------------------------------------------------------------------------
     */
-    function proccessMake()
+    function proccessMake(m)
     {
+        migrations = m;
         var current = new Date();
-        var pid = (DBUtil.getObject("proccess.update") || []);
-        var pDefault = [
-            migrate,
-            migrateLocalStorage,
-            download,
-        ];
-        if (pid.length > 0)
-        {
-            pid.map(function(r)
-            {
-                var index = pDefault.indexOf(eval(r.name));
-                if(index!= -1)
-                {
-                    var nextUpdate = new Date( r.lastUpdate + (1440 * 60 * 1000));
-                    if(current.getTime() < nextUpdate.getTime()){
-                        pDefault.splice(index, 1);
-                    }
-                }
-            })
+        var pDefault = [];
+        
+        if (migrations.length > 0) {
+            pDefault.push(migrate);
         }
+        if (taskLocalStorage.length > 0){
+            pDefault.push(migrateLocalStorage);
+        }
+
         return ProccessSync.proccessStart(pDefault);
     }
     /**
@@ -80,49 +79,36 @@ angular.module('starter')
         var deferred = $q.defer();
         var listFails = [];
 
-        $http.get('migration-make.json', {}).then(function (res) {
-            var scripts = res.data.map(function (r) { return r.replace('www', ''); });
-            db.select(['path']).from('migrations').where({ path: { operator: 'IN', value: scripts } }).all().then(function (r) {
-                if (r.length > 0) {
-                    angular.forEach(r, function (m, i) {
-                        var index = scripts.indexOf(m.path)
-                        if (index != -1) {
-                            scripts.splice(index, 1);
-                        }
-                    })
-                }
-                var data = scripts;
-                var total = data.length;
-                function sync(index) {
-                    $timeout(function () {
-                        if (index < data.length) {
-                            var next = (index + 1);
-                            var filename = data[index];
-                            var current = {status: 1,path: filename,created: Date.now()};
-                            deferred.notify({ i: next, t: total});
-                            $http.get(filename).then(function (qData) {
-                                db.insert('migrations', current).then(function(){
-                                    db.query(qData.data).then(fnVoid, function (e) {
-                                        listFails.push(current);
-                                        db.remove('migrations', { path: filename });
-                                    }).finally(function() {
-                                        sync(next);
-                                    })
-                                },function(e){
-                                    listFails.push(current);
-                                    sync(next);
-                                });
-                            });
-                        } else {
-                            deferred.notify({ i: index, t: total});
-                            ProccessSync.proccessFinish(listFails, "success run migrations.").then(deferred.resolve);
-                        }
-                    }, 500);
-                }
+        var data = migrations;
+        var total = data.length;
+        function sync(index) {
+            if (index < data.length) {
+                $timeout(function () {
+                    var next = (index + 1);
+                    var filename = data[index];
+                    var current = {status: 1,path: filename,created: Date.now()};
+                    deferred.notify({ i: next, t: total});
+                    $http.get(filename).then(function (qData) {
+                        db.insert('migrations', current).then(function(){
+                            db.query(qData.data).then(fnVoid, function (e) {
+                                listFails.push(current);
+                                db.remove('migrations', { path: filename });
+                            }).finally(function() {
+                                sync(next);
+                            })
+                        },function(e){
+                            listFails.push(current);
+                            sync(next);
+                        });
+                    });
+                }, 500);
+            } else {
+                deferred.notify({ i: index, t: total});
+                ProccessSync.proccessFinish(listFails, "success run migrations.").then(deferred.resolve);
+            }
+        }
 
-                sync(0);
-            });
-        })
+        sync(0);
         return deferred.promise;
     }
 
@@ -135,12 +121,12 @@ angular.module('starter')
         scope.message = "Migrating localstorage data to the local device database";
         var deferred = $q.defer();
         var listFails = [];
-        var data = angular.fromJson(localStorage.getItem('task')) || [];
+        var data = taskLocalStorage;
         var total = data.length;
         
         function sync(index) {
-            $timeout(function () {
-                if (index < data.length) {
+            if (index < data.length) {
+                $timeout(function () {
                     var next = (index + 1);
                     var current = data[index];
                     delete current.isNewRecord;
@@ -154,12 +140,12 @@ angular.module('starter')
                     }).finally(function() {
                         sync(next);  
                     });
-                } else {
-                    localStorage.removeItem('task');
-                    deferred.notify({ i: index, t: total });
-                    ProccessSync.proccessFinish(listFails, "success migrate tasks.").then(deferred.resolve);
-                }
-            }, 500);
+                }, 500);
+            } else {
+                localStorage.removeItem('task');
+                deferred.notify({ i: index, t: total });
+                ProccessSync.proccessFinish(listFails, "success migrate tasks.").then(deferred.resolve);
+            }
         }
 
         sync(0);
@@ -168,8 +154,15 @@ angular.module('starter')
     }
 
     /**
-     * Make download of the tasks with the server
-     */
+    * --------------------------------------------------------------------
+    * Make download of the tasks with the server
+    * INSERT - create tasks in app, from returned of server
+    * UPDATE - create tasks in app, from returned of server
+    * DELETE - create tasks in app, from returned of server
+    * --------------------------------------------------------------------
+    * @param scope the progress scope
+    * @param forceAuth validate to force the download
+    */
     function download(scope,forceAuth)
     {
         scope.message = "Load the tasks with the remote app";
@@ -180,10 +173,10 @@ angular.module('starter')
         }
         var deferred = $q.defer();
 
-        $http.get(AppSetting.urlListServer()).then(function (res) {
+        TaskServer.query().$promise.then(function (response) {
             var listFails = [];
             var arrayIds = [];
-            var data = res.data;
+            var data = response;
             var total = data.length;
             function sync(index) {
                 if (index < data.length) {
@@ -191,18 +184,14 @@ angular.module('starter')
                         var next = (index + 1);
                         var current = data[index];
                         deferred.notify({ i: next, t: total});
-                        Task.findOneReference(current._id).then(function(t){
-                            var rIndex = arrayIds.indexOf(current._id);
-                            if (rIndex != -1){
-                                arrayIds.splice(rIndex, 1);
-                            }
+                        var rIndex = arrayIds.indexOf(current.id_task_reference);
+                        if (rIndex != -1) {
+                            arrayIds.splice(rIndex, 1);
+                        }
+                        Task.saveByServer(current).then(fnVoid, function (e) {
+                            listFails.push(current);
+                        }).finally(function () {
                             sync(next);
-                        }, function (err){
-                            Task.saveByServer(current).then(fnVoid, function (e) {
-                                listFails.push(current);
-                            }).finally(function() {
-                                sync(next);
-                            });
                         });
                     },500);
                 } else {
@@ -211,8 +200,16 @@ angular.module('starter')
                         deferred.notify({ i: index, t: total });
                         ProccessSync.proccessFinish(listFails, "success dowload server tasks.").then(deferred.resolve);    
                     }
-                    if (arrayIds.length>0){
-                        Task.removeReferences(arrayIds).then(fnVoid, function(e){ listFails.push(current); }).finally(finisher);
+                    if (arrayIds.length>0)
+                    {
+                        messageBox.confirm({
+                            title: "Sync task Deleted",
+                            message: "Was found " + arrayIds.length + " task(s) removed from server, you wish remove from app too?",
+                            success: function (e) {
+                                Task.removeReferences(arrayIds).then(fnVoid, function (e) { listFails.push(current); }).finally(finisher);
+                            },
+                            fail: finisher
+                        }, $rootScope);
                     } else{
                         finisher();
                     }
@@ -229,46 +226,57 @@ angular.module('starter')
         
         return deferred.promise;
     }
-    
-    /**
-     * Make uploaf of the tasks with the server(not implemented)
-     */
-    function sync(){}
 
-    function syncOne(task){
-        Loading.show();
-        return $q(function(resolve,reject){
-            $http.post(AppSetting.urlSyncOne(), {
-                title:          task.title,
-                description:    task.description,
-                priority:       task.priority,
-                situation:      task.situation,
-                status:         task.status,
-                created:        task.created,
-                start_date:      task.start_date,
-                end_date:        task.end_date
-            }).then(function(res){
-                $timeout(function() {
-                    Task.saveSyncId(res.data.task._id, task.id).then(function(){
-                        resolve(res.data.task);
-                    }, function(e){
-                        reject('No was possible save the task');
+    /**
+     * --------------------------------------------------------------------
+     * Remove task deleted from app, in the server too
+     * --------------------------------------------------------------------
+     * @param {array} references 
+     */
+    function remove(scope, references) {
+        var listFails = [];
+        var data = references;
+        var total = data.length;
+        var deferred = $q.defer();
+        function sync(index) {
+            if (index < data.length) {
+                $timeout(function(){
+                    var next = (index + 1);
+                    var current = data[index];
+                    deferred.notify({ i: next, t: total });
+                    TaskServer.patch({ taskId: current }, {}).$promise.then(function () { }, function (err) {
+                        listFails.push(err.data.message);
+                    }).finally(function () {
+                        sync(next);
                     });
-                },1000);
-            }, function(e){
-                reject(e.data.message);
-            }).finally(function (params) {
-                $timeout(function () {
-                    Loading.hide();
-                }, 1000);
-            });
-        });
+                }, 500);
+            } else {
+                deferred.notify({ i: index, t: total });
+                ProccessSync.proccessFinish(listFails, "success remove tasks from server.").then(deferred.resolve);
+            }
+        }
+        sync(0);
+        
+        return deferred.promise;
     }
     
     return {
         initialize: initialize,
         proccessMake: proccessMake,
-        syncOne: syncOne,
+        remove: function(references) {
+            messageBox.confirm({
+                title: "Sync task Deleted",
+                message: "Was found " + references.length + " task(s) synced with web app, you wish remove from web too?",
+                success: function (e) {
+                    ProccessSync.proccessStart([remove], [references], function(errors) {
+                        messageBox.alert('Success', [
+                            "Success when removing tasks from server, however has the follow errors:<br>",
+                            errors[0].join('<br>'),
+                        ].join(''), $rootScope);
+                    })
+                }
+            }, $rootScope);
+        },
         dowload: function() {
             return ProccessSync.proccessStart([download]);
         }

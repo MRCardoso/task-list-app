@@ -6,6 +6,7 @@
 angular.module('starter', [
     'ionic', 
     'ngCordova', 
+    'ngResource',
     'chart.js',
     'storelitedb',
     'logding.helper'

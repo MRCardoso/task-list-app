@@ -11,6 +11,7 @@ angular.module('starter').controller('TaskController', [
         $scope.statuses = labels['status'];
         $scope.showRemove = false;
         $scope.arrayIds = [];
+        $scope.authenticated = (UserData.getToken() ? true : false);
                 
         /**
         | --------------------------------------------------------------------
@@ -246,24 +247,14 @@ angular.module('starter').controller('TaskController', [
         {
             event.stopPropagation();
             data.syncing = true;
-            TaskSync.syncOne(data).then(function(task){
+            Task.syncServer(data).then(function(task){
                 data.id_task_reference = task._id;
                 if( window.cordova )
                     $cordovaToast.show("Task sync with success!!", 'long', 'top');
+            }, function(err) {
+                if (window.cordova)
+                    $cordovaToast.show(err, 'long', 'top');
             }).finally(function () { delete data.syncing; });
-        };
-
-        /**
-        | --------------------------------------------------------------------
-        | validate if the current task already was synced
-        | --------------------------------------------------------------------
-        */
-        $scope.isSync = function(item)
-        {
-            if (UserData.authenticated()){
-                return (item.id_task_reference == null? false: true);
-            }
-            return null;
         };
 
         /**

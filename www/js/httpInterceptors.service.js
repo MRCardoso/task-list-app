@@ -1,6 +1,18 @@
 angular.module('starter').factory('httpInterceptors', function($q, $injector,$rootScope)
 {
     return {
+        'request': function (config) {
+            if(!config.params){
+                config.params = {};
+            }
+            if (/http(s)?:\/\//.test(config.url)){
+                var pInfo = ionic.Platform;
+                config.params['PlatformOrigin'] = 1;//mobile
+                config.params['PlatformName'] = pInfo.platform();
+                config.params['PlatformVersion'] = pInfo.version();
+            }
+            return config;
+        },
         'responseError': function (rejection) {
             var code = rejection.status + ' - ' + rejection.statusText;
             switch (rejection.status) {

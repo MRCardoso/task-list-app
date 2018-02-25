@@ -7,7 +7,8 @@ angular.module('starter')
     | Open a popup 'show' with progress of the syncrony of the requires module
     | -------------------------------------------------------------------------------
     */
-    function progressSyncModal(data){
+    function progressSyncModal(data, pArgs){
+        pArgs = (angular.isUndefined(pArgs) ? [] : pArgs);
         var deferred = $q.defer();
         
         scope = $rootScope.$new();
@@ -53,7 +54,7 @@ angular.module('starter')
                 var current = data[index];
                 var fnName = current.name;
                 deferred.notify(index);
-                current(scope).then(function (success) {
+                current(scope, pArgs[index]).then(function (success) {
                     $this.proccessUpdate(fnName);
                     Log.success("ProgressSyncSucess: " + success);
                 }, function (error) {
@@ -122,17 +123,22 @@ angular.module('starter')
     | Start call of the continuos proccesses of the app 
     | -------------------------------------------------------------------------------
     */
-    this.proccessStart = function (proccess) {
+    this.proccessStart = function (proccess, pArgs, cbErr) {
         if (proccess.length == 0) {
             return;
         }
-        progressSyncModal(proccess).then(function () {
+        progressSyncModal(proccess, pArgs).then(function () {
             if (window.cordova) {
                 window.plugins.toast.show("Data was synced with successfull", 'long', 'top');
             }
         }, function (errors) {
             errorList = [];
-            ExpoImpo.download(errors, "There are someone errors in the sync, do you wish download the tasks with error?");
+            if (angular.isUndefined(cbErr)){
+                cbErr = function (errors){
+                    ExpoImpo.download(errors, "There are someone errors in the sync, do you wish download the tasks with error?");
+                };
+            }
+            cbErr(errors);
         });
     };
     /*

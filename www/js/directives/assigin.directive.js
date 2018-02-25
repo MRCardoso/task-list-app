@@ -4,7 +4,7 @@ angular.module('starter').directive('assigin', function(){
         scope: {
             onShow: '=?onShow'
         },
-        controller: ["$scope", "$state", "$ionicModal", "$cordovaToast", "UserData", "User", "messageBox", "Log", "TaskSync", function ($scope, $state, $ionicModal, $cordovaToast, UserData, User, messageBox, Log, TaskSync){
+        controller: ["$scope", "$state", "$ionicModal", "$cordovaToast", "$timeout", "UserData", "User", "messageBox", "Log", "TaskSync", function ($scope, $state, $ionicModal, $cordovaToast, $timeout, UserData, User, messageBox, Log, TaskSync){
             function refreshAuth() {
                 $scope.$root.userData = UserData.find();
                 $scope.$root.isAuth = ($scope.$root.userData.getToken() != null ? true : false);
@@ -31,6 +31,9 @@ angular.module('starter').directive('assigin', function(){
                 User.signin(angular.extend({ username: null, password: null }, this.signinData))
                 .then(function (data) {
                     $scope.closeModal();
+                    $timeout(function() {
+                        TaskSync.dowload();
+                    },1000);
                 }, function (err) {
                     messageBox.alert('Error', ['<div class="center">', err, '</div>'].join(''), $scope);
                 });
@@ -55,7 +58,6 @@ angular.module('starter').directive('assigin', function(){
             $scope.$on('auth.user.refresh', function () {
                 Log.info('---------------------auth.user.refresh---------------------');
                 refreshAuth();
-                TaskSync.dowload();
                 $state.reload();
             });
         }],

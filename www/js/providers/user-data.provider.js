@@ -19,21 +19,16 @@ angular.module('starter').provider('UserData', ["$injector", "AppSetting", funct
         return loadUser;
     };
 
-    var authenticated = function(params) {
-        var user = find();
-        return (user ? true : false);
-    }
     var getToken = function(){
         var user = find();
-        return user.authToken || null;
+        return (user != null ? (user.authToken || null) : null);
     }
     
     this.$get = function () {
         return {
             add: add,
             find: find,
-            getToken: getToken,
-            authenticated: authenticated
+            getToken: getToken
         }
     };
 }]);

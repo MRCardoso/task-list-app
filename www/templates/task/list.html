@@ -37,16 +37,13 @@
                                 <div class="task-info-item">
                                     <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
                                 </div>
-                                <div class="task-info-item" ng-switch="isSync(item)">
-                                    <button ng-switch-when="false" ng-hide="item.syncing" ng-click="sync($event, item)" class="button-sync">
+                                <div class="task-info-item" ng-show="authenticated">
+                                    <button ng-hide="item.syncing" ng-click="sync($event, item)" 
+                                            ng-class="{'button-sync': item.id_task_reference == null, 'button-synced': item.id_task_reference != null}">
                                         <i class="icon ion-android-sync"></i>
-                                        Enviar
+                                        {{ item.id_task_reference == null ? "Enviar" : "Atualizar"}}
                                     </button>
                                     <ion-spinner icon="spiral" ng-show="item.syncing"></ion-spinner>
-                                    <button ng-switch-when="true" class="button-synced">
-                                        <i class="icon ion-checkmark"></i>
-                                        Enviado
-                                    </button>
                                 </div>
                             </div>
                         </div>

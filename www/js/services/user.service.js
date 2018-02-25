@@ -1,4 +1,4 @@
-angular.module('starter').service('User', ["$q", "$http", "$rootScope", "$timeout", "AppSetting", "UserData", "Loading", function ($q, $http, $rootScope, $timeout, AppSetting, UserData, Loading)
+angular.module('starter').service('User', ["$q", "$http", "$rootScope", "AppSetting", "UserData", "Loading", function ($q, $http, $rootScope, AppSetting, UserData, Loading)
 {
     var refreshToken = function(token) {
         $http.defaults.headers.post['x-access-token'] = token;
@@ -18,9 +18,7 @@ angular.module('starter').service('User', ["$q", "$http", "$rootScope", "$timeou
             }, function(e){
                 reject(e.data.message);
             }).finally(function(params) {
-                $timeout(function() {
-                    Loading.hide();
-                },1000);
+                Loading.hide();
             });
         });
     };
@@ -37,9 +35,7 @@ angular.module('starter').service('User', ["$q", "$http", "$rootScope", "$timeou
             }, function(e){
                 reject(e.data.message);
             }).finally(function (params) {
-                $timeout(function () {
-                    Loading.hide();
-                }, 1000);
+                Loading.hide();
             });
         });
     }

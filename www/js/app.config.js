@@ -12,6 +12,8 @@ angular.module('starter').config(function($ionicConfigProvider, $httpProvider, U
     };
     $httpProvider.defaults.headers.common = headerParams;
     $httpProvider.defaults.headers.post = headerParams;
+    $httpProvider.defaults.headers.put = headerParams;
+    $httpProvider.defaults.headers.patch = headerParams;
 
     $httpProvider.defaults.transformRequest = function(data){
         if (angular.isUndefined(data)) {

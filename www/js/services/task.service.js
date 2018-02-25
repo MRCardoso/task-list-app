@@ -1,4 +1,11 @@
-angular.module('starter').service('Task', ['$q','$http','Database', function($q, $http, Database)
+angular.module('starter')
+.factory('TaskServer', ['$resource', 'AppSetting', function ($resource, AppSetting) {
+    return $resource(AppSetting.urlSync(), null, {
+        'update': { method: 'PUT' },
+        'patch': { method: 'PATCH' },
+    });
+}])
+    .service('Task', ['$q', '$http', '$injector', '$timeout', 'Database', 'TaskServer', function ($q, $http, $injector, $timeout,Database, TaskServer)
 {
     var fields = {
         id: ['INTEGER PRIMARY KEY AUTOINCREMENT', null],
@@ -159,7 +166,23 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
      * @param {string} id the id of the task to be deleted
      */
     this.remove = function(id){
-        return DB().remove('task', {id:id});
+        var $this = this;
+        return $q(function(resolve,reject){
+            $this.findReferences({ id: id }).then(function (references) {
+                var listIds = references.filter(function(r) {
+                    return r.id_task_reference != null;
+                }).map(function (r) {
+                    return r.id_task_reference;
+                });
+
+                DB().remove('task', { id: id }).then(function (result) {
+                    if (listIds.length > 0) {
+                        $injector.get('TaskSync').remove(listIds);
+                    }
+                    resolve(result);
+                }, reject);
+            });
+        })
     };
     /**
      * get all records in the task table
@@ -220,16 +243,24 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
      * @return Promise
      */
     this.saveByServer = function(data){
-        return this.save({
-            id_task_reference: data._id,
-            title:          data.title,
-            description:    data.description,
-            priority:       data.priority,
-            situation:      data.situation,
-            status:         data.status,
-            created:        new Date(data.created),
-            start_date:     new Date(data.start_date),
-            end_date:       (data.end_date != null ? new Date(data.end_date) : null)
+        var $this = this;
+        var itens = {
+            id_task_reference: data.id_task_reference,
+            title: data.title,
+            description: data.description,
+            priority: data.priority,
+            situation: data.situation,
+            status: data.status,
+            created: new Date(data.created),
+            start_date: new Date(data.start_date),
+            end_date: (data.end_date != null ? new Date(data.end_date) : null)
+        };
+        return $q(function(resolve,reject) {
+            $this.findOneReference(data.id_task_reference).then(function (t) {
+                $this.save(itens, t.id).then(resolve, reject);
+            }, function (err) {
+                $this.save(itens).then(resolve, reject);
+            });
         });
     };
 
@@ -251,10 +282,14 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
      * @example Task.findReferences(); the id reference is in '_id'
      * @return Promise
      */
-    this.findReferences = function(){
+    this.findReferences = function(params){
+        var condition = { id_task_reference: { operator: '<>', value: ""} };
+        if (angular.isDefined(params)){
+            condition = angular.extend(condition,params);
+        }
         return DB().select(['id_task_reference'])
             .from('task')
-            .where({ id_task_reference: { operator: 'IS NOT', value: 'NULL'}})
+            .where(condition)
             .all();
     };
     
@@ -274,5 +309,45 @@ angular.module('starter').service('Task', ['$q','$http','Database', function($q,
             id = { operator: "IN", value: references };
         }
         return DB().remove('task', { id_task_reference: id });
+    };
+
+    /**
+    * --------------------------------------------------------------------
+    * Insert/update a task with the server
+    * --------------------------------------------------------------------
+    * @param {object} data the task to be update/create in server
+    * @returns Promise
+    */
+    this.syncServer = function(data){
+        var task;
+        var $this = this;
+        var itens = {
+            title: data.title,
+            description: data.description,
+            priority: data.priority,
+            situation: data.situation,
+            status: data.status,
+            created: data.created,
+            startDate: data.start_date,
+            endDate: data.end_date
+        };
+        if (data.id_task_reference){
+            task = TaskServer.update({ taskId: data.id_task_reference }, itens);
+        } else{
+            task = TaskServer.save(itens);
+        }
+        return $q(function(resolve, reject) {
+            task.$promise.then(function (response) {
+                $timeout(function() {
+                    $this.saveSyncId(response.module._id, data.id).then(function () {
+                        resolve(response.module);
+                    }, function (e) {
+                        reject('No was possible save the task');
+                    });
+                },1000);
+            }, function (err) {
+                reject(err.data.message);
+            });  
+        });
     };
 }]);
