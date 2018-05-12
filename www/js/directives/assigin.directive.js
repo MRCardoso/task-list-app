@@ -63,7 +63,7 @@ angular.module('starter').directive('assigin', function(){
         }],
         template: [
             '<ion-nav-buttons side="left">',
-                '<a class="button button-blue icon" ng-class="{\'ion-log-in\': !isAuth, \'ion-android-settings\': isAuth}" ng-click="$root.assignModal()"></a>',
+                '<a class="button button-blue icon" ng-class="{\'ion-log-in\': !isAuth, \'ion-android-settings\': isAuth}" ng-click="$root.assignModal()" ng-show="$root.isOnline"></a>',
             '</ion-nav-buttons>'
         ].join('')
     }

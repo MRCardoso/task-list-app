@@ -7,6 +7,14 @@ angular.module('starter').factory('httpInterceptors', function($q, $injector,$ro
             }
             if (/http(s)?:\/\//.test(config.url)){
                 var pInfo = ionic.Platform;
+                $cordovaNetwork = $injector.get('$cordovaNetwork');
+                
+                if ($cordovaNetwork.getNetwork()!= undefined && !$cordovaNetwork.isOnline()){
+                    config.status = 503;
+                    config.data = { message: 'Network connection required'};
+                    return $q.reject(config);
+                }
+                
                 config.params['PlatformOrigin'] = 1;//mobile
                 config.params['PlatformName'] = pInfo.platform();
                 config.params['PlatformVersion'] = pInfo.version();
@@ -17,7 +25,11 @@ angular.module('starter').factory('httpInterceptors', function($q, $injector,$ro
             var code = rejection.status + ' - ' + rejection.statusText;
             switch (rejection.status) {
                 // case 500: break;
-                // case 400: break;
+                case 503:
+                case 400:
+                    if (window.cordova)
+                        $injector.get('$cordovaToast').show(rejection.data.message, 'long', 'top');
+                    break;
                 // case 404: break;
                 // case 403: break;
                 case 401:

@@ -2,6 +2,8 @@
     
     <ion-nav-title aria-label="center">
         Task
+        <span ng-show="customFilter.sync">(Synced Web App)</span>
+        <span ng-show="customFilter.noSync">(Local Storage)</span>
     </ion-nav-title>
 
     <ion-nav-buttons side="right">
@@ -38,7 +40,7 @@
                                     <render-label type="'situation'" labels="situations" index="item.situation"></render-label>
                                 </div>
                                 <div class="task-info-item" ng-show="authenticated">
-                                    <button ng-hide="item.syncing" ng-click="sync($event, item)" 
+                                    <button ng-hide="item.syncing || !$root.isOnline" ng-click="sync($event, item)" 
                                             ng-class="{'button-sync': item.id_task_reference == null, 'button-synced': item.id_task_reference != null}">
                                         <i class="icon ion-android-sync"></i>
                                         {{ item.id_task_reference == null ? "Enviar" : "Atualizar"}}
@@ -91,13 +93,15 @@
                 </label>
             </div>
             <div class="col col-10">
-                <button class="button button-blue button-small icon ion-android-download" ng-click="syncWithServer()"></button>
+                <button ng-class="{'button-blue': !customFilter.noSync, 'button-blue-light': customFilter.noSync}"
+                    class="button button-small icon ion-cloud" ng-click="filterNoSync()"></button>
             </div>
             <div class="col col-10">
-                <button class="button button-blue button-small icon ion-android-sync" ng-click="filterNoSync()"></button>
+                <button ng-class="{'button-blue': !customFilter.sync, 'button-blue-light': customFilter.sync}"
+                class="button button-small icon ion-android-cloud-done" ng-click="filterSync()"></button>
             </div>
             <div class="col col-10">
-                <button class="button button-blue button-small icon ion-checkmark" ng-click="filterSync()"></button>
+                <button class="button button-blue button-small icon ion-android-sync" ng-click="downloadServer()"></button>
             </div>
         </div>
     </ion-footer-bar>

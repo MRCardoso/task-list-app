@@ -5,6 +5,7 @@ angular.module('starter').controller('TaskController', [
         var labels = appLabel;
         var tasks = [];
         var customFilter = {sync:false,noSync:false};
+        $scope.customFilter = customFilter;
         $scope.tasks = [];
         $scope.priorities = labels['priority'];
         $scope.situations = labels['situation'];
@@ -228,10 +229,10 @@ angular.module('starter').controller('TaskController', [
         | Update tasks with the server manually
         | --------------------------------------------------------------------
         */
-        $scope.syncWithServer = function() {
+        $scope.downloadServer = function() {
             messageBox.confirm({
                 title: "Syncronize tasks",
-                message: "You with check per update in remote app?",
+                message: "You want check per update in remote app?",
                 success: function (e) {
                     TaskSync.dowload();
                 }

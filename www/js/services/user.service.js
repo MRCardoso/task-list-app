@@ -31,8 +31,14 @@ angular.module('starter').service('User', ["$q", "$http", "$rootScope", "AppSett
                 UserData.add(null);
                 refreshToken(null);
                 $rootScope.$broadcast('auth.user.refresh', "signout");
-                resolve(res.data);
+                resolve(null);
             }, function(e){
+                if (e.status == 404){
+                    UserData.add(null);
+                    refreshToken(null);
+                    $rootScope.$broadcast('auth.user.refresh', "signout");
+                    return resolve(null);
+                }
                 reject(e.data.message);
             }).finally(function (params) {
                 Loading.hide();

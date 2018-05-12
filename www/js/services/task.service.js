@@ -5,8 +5,7 @@ angular.module('starter')
         'patch': { method: 'PATCH' },
     });
 }])
-    .service('Task', ['$q', '$http', '$injector', '$timeout', 'Database', 'TaskServer', function ($q, $http, $injector, $timeout,Database, TaskServer)
-{
+.service('Task', ['$q', '$http', '$injector', '$timeout', 'Database', 'TaskServer', function ($q, $http, $injector, $timeout,Database, TaskServer){
     var fields = {
         id: ['INTEGER PRIMARY KEY AUTOINCREMENT', null],
         // id_task_reference: ['INT', null],

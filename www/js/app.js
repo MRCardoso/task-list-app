@@ -10,7 +10,8 @@ angular.module('starter', [
     'chart.js',
     'storelitedb',
     'logding.helper'
-]).run(function($ionicPlatform, TaskSync){
+]).run(function ($ionicPlatform, TaskSync, $rootScope, $cordovaNetwork){
+    $rootScope.isOnline = true;
     $ionicPlatform.ready(function()
     {
         if(window.cordova && window.cordova.plugins.Keyboard) 
@@ -28,7 +29,20 @@ angular.module('starter', [
             StatusBar.styleDefault();
             StatusBar.backgroundColorByHexString("#4E8FBD");
         }
+
+        if ($cordovaNetwork.getNetwork() != undefined) {
+            $rootScope.isOnline = $cordovaNetwork.isOnline();
+        }
+        
+        $rootScope.$on('$cordovaNetwork:online', function (event, networkState) {
+            $rootScope.isOnline = true;
+        });
+    
+        $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
+            $rootScope.isOnline = false;
+        });
     });
     
+
     TaskSync.initialize();
 });
