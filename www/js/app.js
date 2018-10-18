@@ -34,6 +34,11 @@ angular.module('starter', [
             $rootScope.isOnline = $cordovaNetwork.isOnline();
         }
         
+        cordova.plugins.notification.local.schedule({
+            title: 'Diary Tasks',
+            trigger: { every: { minute: 20 } }
+        });
+
         $rootScope.$on('$cordovaNetwork:online', function (event, networkState) {
             $rootScope.isOnline = true;
         });
